@@ -1,0 +1,107 @@
+Research on total_dividend:
+Top companies: ['ASII', 'TGKA', 'BBCA']
+
+
+Company: ASII
+Here is an overview of Astra International Tbk (ASII):
+
+- **Symbol:** ASII.JK
+- **Company Name:** Astra International Tbk
+- **Industry:** Multi-sector Holdings
+- **Sector:** Industrials
+- **Market Cap:** IDR 193,511,597,015,040
+- **Market Cap Rank:** 11
+- **Address:** Menara Astra Lt 58-63, Jl. Jendral Sudirman Kav 5-6, Jakarta, 10220
+- **Number of Employees:** 135,410
+- **Listing Date:** 1990-04-04
+- **Website:** [www.astra.co.id](http://www.astra.co.id)
+- **Phone:** (021) 508 43 888
+- **Email:** corporate.secretary@ai.astra.co.id
+
+### Stock Information:
+- **Last Close Price:** IDR 4780 (as of 2025-06-02)
+- **Daily Change:** -1.44%
+  
+### Price Milestones:
+- **YTD High:** 5025 (2025-01-16)
+- **52-Week High:** 5300 (2024-09-25)
+- **All-Time High:** 9350 (2017-04-25)
+- **YTD Low:** 4370 (2025-02-28)
+- **52-Week Low:** 4290 (2024-06-12)
+- **All-Time Low:** 85 (2001-04-23)
+
+### ESG Score:
+- **ESG Score:** 34.5
+
+Astra International is one of Indonesia's top companies, predominantly operating in the multi-sector holdings sector.
+
+Research Date: 2025-06-03T23:39:39.894717
+
+
+Company: TGKA
+### Tigaraksa Satria Tbk (TGKA.JK)
+
+- **Industry**: Processed Foods
+- **Sector**: Consumer Non-Cyclicals
+- **Market Cap**: IDR 6,199,827,759,104 
+- **Market Cap Rank**: 184
+- **Employees**: 2,099
+
+#### Stock Information
+- **Last Close Price**: IDR 6,750 (as of 2025-06-02)
+- **Daily Close Change**: -5.26%
+- **52 Week High**: IDR 7,400 (2025-05-07)
+- **52 Week Low**: IDR 5,825 (2025-03-05)
+- **All-Time High**: IDR 10,200 (2020-11-04)
+- **All-Time Low**: IDR 190 (2006-06-15)
+
+#### Company Details
+- **Listing Board**: Development
+- **Listing Date**: 1990-06-11
+- **Headquarters**: Menara Duta Lt. 2 & 4, Jl. H.R. Rasuna Said Kav. B-9, Setiabudi, Jakarta Selatan
+- **Contact**: 
+  - Phone: 021 - 2527300
+  - Email: [corporate@tigaraksa.co.id](mailto:corporate@tigaraksa.co.id)
+- **Website**: [www.tigaraksa.co.id](http://www.tigaraksa.co.id)
+
+No available ESG score.
+
+Research Date: 2025-06-03T23:39:46.484078
+
+
+Company: BBCA
+### PT Bank Central Asia Tbk. (BBCA.JK)
+
+- **Overview:**
+  - **Industry:** Banks
+  - **Sector:** Financials
+  - **Market Cap:** IDR 1,121,793,448,345,600
+  - **Market Cap Rank:** 1
+
+- **Contact Information:**
+  - **Address:** Menara BCA, Grand Indonesia, Jalan MH Thamrin No. 1, Jakarta 10310
+  - **Phone:** 021-23588000
+  - **Email:** [investor_relations@bca.co.id](mailto:investor_relations@bca.co.id)
+  - **Website:** [www.bca.co.id](http://www.bca.co.id)
+
+- **Stock Information:**
+  - **Latest Close Price:** IDR 9,100
+  - **Last Close Date:** 2025-06-02
+  - **Daily Close Change:** -3.19%
+  - **52-Week High:** IDR 10,950 (Date: 2024-09-23)
+  - **52-Week Low:** IDR 7,275 (Date: 2025-04-08)
+
+- **History:**
+  - **Listing Date:** 2000-05-31
+  - **All-Time High:** IDR 10,950 (Date: 2024-09-23)
+  - **All-Time Low:** IDR 175 (Date: 2004-06-08)
+
+- **Employees:** 24,685
+
+- **ESG Score:** 21.5
+
+This company operates in the financial sector and holds a prominent position in the Indonesian market. For further details, visit their [website](http://www.bca.co.id).
+
+Research Date: 2025-06-03T23:39:54.154650
+
+

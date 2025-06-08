@@ -1,3 +1,2 @@
 openai-agents
-openai-agents[viz]
 streamlit

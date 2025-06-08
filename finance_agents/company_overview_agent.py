@@ -2,6 +2,8 @@ from agents import Agent, Runner, function_tool
 from dotenv import load_dotenv
 from utils.api_client import retrieve_from_endpoint
 
+from schemas.finance_app import TextOnlyOutput
+
 load_dotenv()
 
 @function_tool
@@ -21,7 +23,7 @@ company_overview_agent = Agent(
     name="Company Overview Agent",
     instructions="Return the a short narative overview of the company from the output of assigned tool.",
     tools=[get_company_overview],
-    output_type=str,
+    output_type=TextOnlyOutput,
     tool_use_behavior="run_llm_again"
 )
 

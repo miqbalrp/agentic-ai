@@ -5,19 +5,18 @@ from datetime import date
 from dataclasses import dataclass
 from typing import Literal
 
-load_dotenv()
+from finance_agents.company_overview_agent import company_overview_agent
+from finance_agents.trend_analysis_agent import trend_analysis_agent
 
-@dataclass
-class TriageOutput:
-    query_type: Literal["company_overview", "trend_analysis", "top_companies_list"]
+load_dotenv()
 
 triage_agent = Agent(
     name="Triage Agent",
-    instructions="Understand the query from users and decide what is the category of this query.",
-    output_type=TriageOutput
+    instructions="Understand the query from users and handoff the analysis to appropriate agent.",
+    handoffs=[company_overview_agent, trend_analysis_agent]
 )
 
-async def run_triage_agent(input_promt: str) -> str:
+async def run_triage_agent(input_promt: str):
     result = await Runner.run(
         triage_agent,
         input_promt

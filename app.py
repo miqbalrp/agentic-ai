@@ -28,7 +28,7 @@ if user_input:
             y_axis_label = plot_output.axis_labels.y_axis_title
             plot_title = plot_output.plot_title
 
-            rows = []
+            rows = []        
             for dataset in plot_output.plot_data:
                 x_vals = dataset.x
                 y_vals = dataset.y

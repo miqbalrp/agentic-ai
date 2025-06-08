@@ -88,6 +88,3 @@ pylint-output.txt
 # SQLite database files
 *.sqlite3
 *.db
-
-# pdf
-pdf/

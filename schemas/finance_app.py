@@ -8,6 +8,8 @@ class TextOnlyOutput(BaseModel):
     """
     summary: str
 
+# Define list of classification for Top Companies agent
+TopCompanyClassification = Literal["dividend_yield", "earnings", "market_cap", "pb", "pe", "ps"]
 
 # Define output with visualization
 ChartType = Literal["line_chart", "bar_horizontal_chart"]

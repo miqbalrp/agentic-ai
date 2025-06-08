@@ -37,7 +37,7 @@ trend_analysis_agent = Agent(
         "Your task is to generate structured data for **line chart for time-series data** "
         "along with a suitable plot title, "
         "axis labels, and a brief analysis. "
-        "Strictly adhere to the PlotlyFigureOutput schema. "
+        "Strictly adhere to the AnalysisWithPlotOutput schema. "
         "For 'line_chart' charts: "
         "- 'x' should be dates in 'YYYY-MM-DD' format (strings). "
         "- 'y' should be numerical values (floats). "

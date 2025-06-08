@@ -22,6 +22,7 @@ if user_input:
 
             st.markdown("### 🤖 Agent's Response")
             st.write(plot_output.summary)
+            # st.write(plot_output)
 
             x_axis_label = plot_output.axis_labels.x_axis_title
             y_axis_label = plot_output.axis_labels.y_axis_title
@@ -46,16 +47,28 @@ if user_input:
 
             df = pd.DataFrame(rows)
 
-            fig = px.line(
-                df, 
-                x="x_data", 
-                y="y_data", 
-                markers=True, 
-                labels={'x_data': x_axis_label, 'y_data': y_axis_label},
-                title=plot_title,
-                color="category"
-                )
-            st.plotly_chart(fig)
+            if plot_output.plot_data[0].chart_type == 'line_chart':
+                fig = px.line(
+                    df, 
+                    x="x_data", 
+                    y="y_data", 
+                    markers=True, 
+                    labels={'x_data': x_axis_label, 'y_data': y_axis_label},
+                    title=plot_title,
+                    color="category"
+                    )
+                st.plotly_chart(fig)
 
+            elif plot_output.plot_data[0].chart_type == 'bar_horizontal_chart':
+                fig = px.bar(
+                    df, 
+                    x="x_data", 
+                    y="y_data", 
+                    orientation="h",
+                    labels={'x_data': x_axis_label, 'y_data': y_axis_label},
+                    title=plot_title
+                    )
+                st.plotly_chart(fig)
+            
         else: 
             print("No output")

@@ -71,4 +71,7 @@ if user_input:
                 st.plotly_chart(fig)
             
         else: 
-            print("No output")
+            st.markdown("### 🤖 Agent's Response")
+            st.write(agent_response)
+else:
+    st.warning("Currently we provide a report of IDX companies, including: summary overview, daily transaction analysis, and top companies ranked by certain dimension.")

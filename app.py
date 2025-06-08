@@ -7,7 +7,7 @@ from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput
 import pandas as pd
 import plotly.express as px
 
-st.title("Stock Analysis with Agentic AI")
+st.title("IDX Stock Analysis with Agentic AI")
 user_input = st.text_input("Enter your query:")
 
 if user_input:
@@ -60,13 +60,15 @@ if user_input:
                 st.plotly_chart(fig)
 
             elif plot_output.plot_data[0].chart_type == 'bar_horizontal_chart':
+                y_label_order = df['y_data'].tolist()
                 fig = px.bar(
                     df, 
                     x="x_data", 
                     y="y_data", 
                     orientation="h",
                     labels={'x_data': x_axis_label, 'y_data': y_axis_label},
-                    title=plot_title
+                    title=plot_title,
+                    category_orders={'y_data': y_label_order}
                     )
                 st.plotly_chart(fig)
             

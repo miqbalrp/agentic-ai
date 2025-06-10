@@ -7,73 +7,86 @@ from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput
 import pandas as pd
 import plotly.express as px
 
-st.title("IDX Stock Analysis with Agentic AI")
-user_input = st.text_input("Enter your query:")
+def display_agent_response_title():
+    st.markdown("### 🤖 Agent's Response")
 
-if user_input:
-    with st.spinner("Thinking..."):
-        agent_response = asyncio.run(run_triage_agent(user_input))
-        if isinstance(agent_response, TextOnlyOutput):
-            text_output: TextOnlyOutput = agent_response
-            st.markdown("### 🤖 Agent's Response")
-            st.write(text_output.summary)
-        elif isinstance(agent_response, AnalysisWithPlotOutput):
-            plot_output: AnalysisWithPlotOutput = agent_response
+def display_text_only_output(text_output: TextOnlyOutput):
+    display_agent_response_title()
+    st.write(text_output.summary)
 
-            st.markdown("### 🤖 Agent's Response")
-            st.write(plot_output.summary)
-            # st.write(plot_output)
+def display_analysis_with_plot_output(plot_output: AnalysisWithPlotOutput):
+    display_agent_response_title()
+    st.write(plot_output.summary)
+    x_axis_label = plot_output.axis_labels.x_axis_title
+    y_axis_label = plot_output.axis_labels.y_axis_title
 
-            x_axis_label = plot_output.axis_labels.x_axis_title
-            y_axis_label = plot_output.axis_labels.y_axis_title
-            plot_title = plot_output.plot_title
+    for dataset in plot_output.plot_data:
+        plot_title = dataset.plot_title
+        if dataset.category:
+            category_vals = dataset.category
+        else:
+            category_vals = ["Series"] * len(dataset.x)
 
-            rows = []        
-            for dataset in plot_output.plot_data:
-                x_vals = dataset.x
-                y_vals = dataset.y
-                # Use dataset.category if available, else create a list of "Series"
-                if dataset.category:
-                    category_vals = dataset.category
-                else:
-                    category_vals = ["Series"] * len(x_vals)
+        df = pd.DataFrame({
+            "x_data": dataset.x,
+            "y_data": dataset.y,
+            "category": category_vals
+            }
+        )
+
+        if plot_output.plot_data[0].chart_type == 'line_chart':
+            fig = px.line(
+                df, 
+                x="x_data", 
+                y="y_data", 
+                markers=True, 
+                labels={'x_data': x_axis_label, 'y_data': y_axis_label},
+                title=plot_title
+                )
+            st.plotly_chart(fig)
+
+        elif plot_output.plot_data[0].chart_type == 'bar_horizontal_chart':
+            y_label_order = df['y_data'].tolist()
+            fig = px.bar(
+                df, 
+                x="x_data", 
+                y="y_data", 
+                orientation="h",
+                labels={'x_data': x_axis_label, 'y_data': y_axis_label},
+                title=plot_title,
+                category_orders={'y_data': y_label_order}
+                )
+            st.plotly_chart(fig)
+
+
+def main():
+    st.title("IDX Stock Analysis with Agentic AI")
+    user_input = st.text_input("Enter your query:")
+
+    if user_input:
+        with st.spinner("Thinking..."):
+            try:
+                agent_response = asyncio.run(run_triage_agent(user_input))
+                if isinstance(agent_response, TextOnlyOutput):
+                    text_output: TextOnlyOutput = agent_response
+                    display_text_only_output(text_output)
+                elif isinstance(agent_response, AnalysisWithPlotOutput):
+                    plot_output: AnalysisWithPlotOutput = agent_response
+                    display_analysis_with_plot_output(plot_output)
                 
-                for x_val, y_val, cat in zip(x_vals, y_vals, category_vals):
-                    rows.append({
-                        "x_data": x_val,
-                        "y_data": y_val,
-                        "category": cat
-                    })
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
+                st.info("Please try again or try a different query.")
+        
+    else: st.warning("Currently we provide a report of IDX companies, including: summary overview, daily transaction analysis, and top companies ranked by certain dimension.")
 
-            df = pd.DataFrame(rows)
+    st.markdown("""
+    ---
+    🔧 **Powered by**:  
+    [OpenAI API](https://platform.openai.com/docs) | [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) | [Plotly](https://plotly.com/python/) | [Sectors.app API](https://sectors.app) | [Streamlit](https://streamlit.io)
 
-            if plot_output.plot_data[0].chart_type == 'line_chart':
-                fig = px.line(
-                    df, 
-                    x="x_data", 
-                    y="y_data", 
-                    markers=True, 
-                    labels={'x_data': x_axis_label, 'y_data': y_axis_label},
-                    title=plot_title,
-                    color="category"
-                    )
-                st.plotly_chart(fig)
+    💻 **Source Code**: [GitHub Repository](https://github.com/miqbalrp/agentic-ai)
+    """)
 
-            elif plot_output.plot_data[0].chart_type == 'bar_horizontal_chart':
-                y_label_order = df['y_data'].tolist()
-                fig = px.bar(
-                    df, 
-                    x="x_data", 
-                    y="y_data", 
-                    orientation="h",
-                    labels={'x_data': x_axis_label, 'y_data': y_axis_label},
-                    title=plot_title,
-                    category_orders={'y_data': y_label_order}
-                    )
-                st.plotly_chart(fig)
-            
-        else: 
-            st.markdown("### 🤖 Agent's Response")
-            st.write(agent_response)
-else:
-    st.warning("Currently we provide a report of IDX companies, including: summary overview, daily transaction analysis, and top companies ranked by certain dimension.")
+if __name__ == "__main__":
+    main()

@@ -13,7 +13,9 @@ This app demonstrates a modular agent-based workflow:
 - 📊 **Trend Analyst Agent**: Uses a tool to pull real financial data via API and generate the analysis of the trend with visualization.
 - and more
 
-<img width="679" alt="image" src="https://github.com/user-attachments/assets/ff4d628f-2f7e-4779-8c13-b165d240fdea" />
+<img width="510" alt="image" src="https://github.com/user-attachments/assets/10e783b8-68ca-41e4-ae81-6ba4def58ce7" /> <img width="510" alt="image" src="https://github.com/user-attachments/assets/142f4d8e-715c-4419-93c8-e6a1fcddc7d1" />
+
+
 
 
 All agents are orchestrated using the [OpenAI Agents SDK](https://platform.openai.com/docs/assistants/overview), which provides a structured and extensible framework for building LLM-driven applications.
@@ -62,10 +64,13 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
 This project was inspired by the Agentic Patterns Workshop organized by Supertype. The hands-on session introduced practical techniques for building agent-based applications using modern LLMs and retrieval-augmented generation (RAG). The workshop and its accompanying course material — available at sectors.app/bulletin/agentic-patterns — provided the foundational ideas that sparked the development of this financial analytics app. 
 
 ## Learning Milestone
-1. For the first version of the app, I have implement some of the fundamental concept on Multi-Agent System development:
-   a. **Tool-Use, Function Calling, and API-based RAG**: I implement `function_tool` decorator from Agent SDK framework to make API calls. The data of IDX stock that used in this app is the actual data, retrieved from Sectors.app API. This prevents the model halucinate with their own data training and provide wrong information. 
-   b. **The Handoff and Delegation Pattern**: To orchestrate which Agent that should answer the query of user, I create `triage_agent` that responsible to understand the query of the user and handing off to the right agent. 
-   c. **Data Validation with Pydantic**: During the development of this app, I learn that although AI is powerful on doing the task, we should put an extra care for the data output to make sure the orchestration is running smoothly. Hence, I try to standardize the output of each Agent using Pydantic so it will be displayed correctly on Streamlit. This is really helpful especially when I need to use the output of the agent for another tool, in this case is Plotly for data visualization.
+1. [2025-06-09] For the first version of the app, I have implement some of the fundamental concept on Multi-Agent System development:
+   - **Tool-Use, Function Calling, and API-based RAG**: I implement `function_tool` decorator from Agent SDK framework to make API calls. The data of IDX stock that used in this app is the actual data, retrieved from Sectors.app API. This prevents the model halucinate with their own data training and provide wrong information.
+   - **The Handoff and Delegation Pattern**: To orchestrate which Agent that should answer the query of user, I create `triage_agent` that responsible to understand the query of the user and handing off to the right agent.
+   - **Data Validation with Pydantic**: During the development of this app, I learn that although AI is powerful on doing the task, we should put an extra care for the data output to make sure the orchestration is running smoothly. Hence, I try to standardize the output of each Agent using Pydantic so it will be displayed correctly on Streamlit. 
+   - **Combining Text and Visualization in a Report**: If trend analysis and top companies agent are being called, they will provide the analysis as well as the supporting interactive visualization using Plotly Express. To make this happen, a strict data validation need to be implemented as mentioned in the previous point.
+2. 
+
 
 ---
 *This project is part of my ongoing journey into practical Agentic AI — suggestions and contributions are welcome!*

@@ -61,5 +61,11 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
 ## Inspiration
 This project was inspired by the Agentic Patterns Workshop organized by Supertype. The hands-on session introduced practical techniques for building agent-based applications using modern LLMs and retrieval-augmented generation (RAG). The workshop and its accompanying course material — available at sectors.app/bulletin/agentic-patterns — provided the foundational ideas that sparked the development of this financial analytics app. 
 
+## Learning Milestone
+1. For the first version of the app, I have implement some of the fundamental concept on Multi-Agent System development:
+   a. **Tool-Use, Function Calling, and API-based RAG**: I implement `function_tool` decorator from Agent SDK framework to make API calls. The data of IDX stock that used in this app is the actual data, retrieved from Sectors.app API. This prevents the model halucinate with their own data training and provide wrong information. 
+   b. **The Handoff and Delegation Pattern**: To orchestrate which Agent that should answer the query of user, I create `triage_agent` that responsible to understand the query of the user and handing off to the right agent. 
+   c. **Data Validation with Pydantic**: During the development of this app, I learn that although AI is powerful on doing the task, we should put an extra care for the data output to make sure the orchestration is running smoothly. Hence, I try to standardize the output of each Agent using Pydantic so it will be displayed correctly on Streamlit. This is really helpful especially when I need to use the output of the agent for another tool, in this case is Plotly for data visualization.
+
 ---
 *This project is part of my ongoing journey into practical Agentic AI — suggestions and contributions are welcome!*

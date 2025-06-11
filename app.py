@@ -1,6 +1,7 @@
 import streamlit as st
 import asyncio
 
+from agents import trace
 from finance_agents.triage_agent import run_triage_agent
 from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput
 
@@ -58,7 +59,6 @@ def display_analysis_with_plot_output(plot_output: AnalysisWithPlotOutput):
                 )
             st.plotly_chart(fig)
 
-
 def main():
     st.title("IDX Stock Analysis with Agentic AI")
     user_input = st.text_input("Enter your query:")
@@ -66,13 +66,17 @@ def main():
     if user_input:
         with st.spinner("Thinking..."):
             try:
-                agent_response = asyncio.run(run_triage_agent(user_input))
-                if isinstance(agent_response, TextOnlyOutput):
-                    text_output: TextOnlyOutput = agent_response
-                    display_text_only_output(text_output)
-                elif isinstance(agent_response, AnalysisWithPlotOutput):
-                    plot_output: AnalysisWithPlotOutput = agent_response
-                    display_analysis_with_plot_output(plot_output)
+                with trace("Finance Agents Workflow"):
+                    agent_response = asyncio.run(run_triage_agent(user_input))
+                    if isinstance(agent_response, TextOnlyOutput):
+                        text_output: TextOnlyOutput = agent_response
+                        display_text_only_output(text_output)
+                    elif isinstance(agent_response, AnalysisWithPlotOutput):
+                        plot_output: AnalysisWithPlotOutput = agent_response
+                        display_analysis_with_plot_output(plot_output)
+                    else:
+                        display_agent_response_title()
+                        st.write(agent_response)
                 
             except Exception as e:
                 st.error(f"An error occurred: {e}")

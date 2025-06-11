@@ -13,7 +13,9 @@ load_dotenv()
 
 triage_agent = Agent(
     name="Triage Agent",
-    instructions="Understand the query from users and handoff the analysis to appropriate agent. If no appropriate agent, return inform the user that the query is out of the scope of this app.",
+    instructions=
+    "Understand the query from users and handoff the analysis to appropriate agent. " \
+    "If no appropriate agent, return inform the user that the query is out of the scope of this app.",
     handoffs=[company_overview_agent, trend_analysis_agent, top_company_ranked_agent]
 )
 

@@ -2,8 +2,8 @@ import streamlit as st
 import asyncio
 
 from agents import trace
-from finance_agents.triage_agent import run_triage_agent
-from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput
+from finance_agents.orchestrator_agent import run_orchestrator_agent
+from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput, GeneralizedOutput
 
 import pandas as pd
 import plotly.express as px
@@ -15,11 +15,8 @@ def display_text_only_output(text_output: TextOnlyOutput):
     display_agent_response_title()
     st.write(text_output.summary)
 
-def display_analysis_with_plot_output(plot_output: AnalysisWithPlotOutput):
-    display_agent_response_title()
-    st.write(plot_output.summary)
-
-    for dataset in plot_output.plot_data:
+def display_analysis_with_plot_output(plot_data):
+    for dataset in plot_data:
         plot_title = dataset.plot_title
         x_axis_label = dataset.x_axis_title
         y_axis_label = dataset.y_axis_title
@@ -30,7 +27,7 @@ def display_analysis_with_plot_output(plot_output: AnalysisWithPlotOutput):
             }
         )
 
-        if plot_output.plot_data[0].chart_type == 'line_chart':
+        if dataset.chart_type == 'line_chart':
             fig = px.line(
                 df, 
                 x="x_data", 
@@ -41,7 +38,7 @@ def display_analysis_with_plot_output(plot_output: AnalysisWithPlotOutput):
                 )
             st.plotly_chart(fig)
 
-        elif plot_output.plot_data[0].chart_type == 'bar_horizontal_chart':
+        elif dataset.chart_type == 'bar_horizontal_chart':
             y_label_order = df['y_data'].tolist()
             fig = px.bar(
                 df, 
@@ -62,13 +59,13 @@ def main():
         with st.spinner("Thinking..."):
             try:
                 with trace("Finance Agents Workflow"):
-                    agent_response = asyncio.run(run_triage_agent(user_input))
-                    if isinstance(agent_response, TextOnlyOutput):
-                        text_output: TextOnlyOutput = agent_response
-                        display_text_only_output(text_output)
-                    elif isinstance(agent_response, AnalysisWithPlotOutput):
-                        plot_output: AnalysisWithPlotOutput = agent_response
-                        display_analysis_with_plot_output(plot_output)
+                    agent_response = asyncio.run(run_orchestrator_agent(user_input))
+                    print(agent_response)
+                    if isinstance(agent_response, GeneralizedOutput):
+                        display_agent_response_title()
+                        st.write(agent_response.summary)
+                        if len(agent_response.plot_data) > 0:
+                            display_analysis_with_plot_output(agent_response.plot_data)
                     else:
                         display_agent_response_title()
                         st.write(agent_response)

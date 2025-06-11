@@ -28,6 +28,8 @@ class PlotlyTraceData(BaseModel):
         description="The type of chart to generate. 'line_chart' for time-series data, 'bar_horizontal_chart' for categorical data."
     )
     plot_title: str = Field(description="The title of the Plotly chart. Should have a clear short explanation of the chart.")
+    x_axis_title: str = Field(description="Title for the X-axis.")
+    y_axis_title: str = Field(description="Title for the Y-axis.")
 
 class PlotlyAxisLabels(BaseModel):
     x_axis_title: Optional[str] = Field(default=None, description="Title for the X-axis.")
@@ -38,4 +40,9 @@ class AnalysisWithPlotOutput(BaseModel):
     plot_data: List[PlotlyTraceData] = Field(
         description="A list of data objects, each representing a trace for a Plotly figure. Contains data formatted for the specified chart_type."
     )
-    axis_labels: PlotlyAxisLabels = Field(default_factory=PlotlyAxisLabels, description="Optional titles for X and Y axes.")
+
+class GeneralizedOutput(BaseModel):
+    summary: str = Field(description="A narative summary of the output.")
+    plot_data: Optional[List[PlotlyTraceData]] = Field(
+        description="A list of data objects, each representing a trace for a Plotly figure. Contains data formatted for the specified chart_type."
+    )

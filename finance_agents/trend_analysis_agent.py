@@ -34,6 +34,7 @@ trend_analysis_agent = Agent(
     name="Daily Transaction Agent",
     instructions=
         "Provide a dataset of daily transaction values and an analysis of them. "
+        "Never return a chart as an image."
         "Your task is to generate structured data for **line chart for time-series data** "
         "along with a suitable plot title, "
         "axis labels, and a brief analysis. "

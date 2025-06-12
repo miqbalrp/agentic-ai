@@ -69,7 +69,8 @@ This project was inspired by the Agentic Patterns Workshop organized by Supertyp
    - **The Handoff and Delegation Pattern**: To orchestrate which Agent that should answer the query of user, I create `triage_agent` that responsible to understand the query of the user and handing off to the right agent.
    - **Data Validation with Pydantic**: During the development of this app, I learn that although AI is powerful on doing the task, we should put an extra care for the data output to make sure the orchestration is running smoothly. Hence, I try to standardize the output of each Agent using Pydantic so it will be displayed correctly on Streamlit. 
    - **Combining Text and Visualization in a Report**: If trend analysis and top companies agent are being called, they will provide the analysis as well as the supporting interactive visualization using Plotly Express. To make this happen, a strict data validation need to be implemented as mentioned in the previous point.
-2. 
+2. [2025-06-12] The main change in app_v2 is we are utilizing **agent-as-tool** concept (in `orchestrator_agent.py`) rather than handoffs (in `triage_agent.py`). The advantage of this is we able to make more than 1 agent work together rather than handing off to one of the agent. For instance, if the query asks summary overview of a company AND the trend analysis of daily closing price, then two agents will work together; `company_overview_agent` and `trend_analysis_agent`, orchestrated by `orchestrator_agent`. 
+   
 
 
 ---

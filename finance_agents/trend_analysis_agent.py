@@ -18,6 +18,15 @@ def get_today_date() -> str:
     return today.strftime("%Y-%m-%d")
 
 @function_tool
+def get_past_n_days(past_n_days: int) -> str:
+    """
+    Get the date n days ago from today
+    """
+    today = date.today()
+    past_date = today - pd.Timedelta(days=past_n_days)
+    return past_date.strftime("%Y-%m-%d")
+
+@function_tool
 def get_daily_transaction(ticker: str, start_date: str, end_date: str) -> str:
     """
     Get daily transaction for an IDX stock
@@ -45,8 +54,13 @@ trend_analysis_agent = Agent(
         "- Set 'chart_type' to 'line_chart'. "
         "Do NOT include any additional conversational text outside the JSON output. "
         "Always provide relevant 'axis_labels'."
-        "Infer the date range from the user query. Today's date is "+ get_today_date(),
-    tools=[get_daily_transaction],
+        "Infer the date range from the input. " \
+        "Use get_past_n_days tool to get the starting date based on user query." \
+        # "If user gives no particular range, set the default as 30 days." \
+        "Today's date is "+ get_today_date(),
+    tools=[get_daily_transaction, 
+           get_past_n_days
+           ],
     tool_use_behavior="run_llm_again",
     output_type=AnalysisWithPlotOutput
 )

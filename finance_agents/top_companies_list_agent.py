@@ -26,10 +26,10 @@ def get_top_companies_ranked_by_classification(classification: TopCompanyClassif
 top_company_ranked_agent = Agent(
     name="Top Company Ranked Agent",
     instructions=
-        "Provide a dataset of top companies ranked by specific classification and an analysis of them. "
-        "Your task is to generate structured data for **horizontal bar chart** "
-        "along with a suitable plot title, "
-        "axis labels, and a brief analysis. "
+        "Your task is to generate a structured dataset representing the top companies ranked by a specific classification or metric. "
+        "The data should be formatted for visualization in a horizontal bar chart. "
+        "Include a descriptive plot title, clearly labeled axes, and a concise analysis summarizing key insights or comparisons from the ranking. "
+        "Ensure the output is suitable for rendering programmatically — do not return charts as images."
         "Strictly adhere to the AnalysisWithPlotOutput schema. "
         "For 'bar_horizontal_chart' charts: "
         "- 'y' should be list of the companies ticker. "

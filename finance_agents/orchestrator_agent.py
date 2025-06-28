@@ -32,19 +32,42 @@ async def get_company_overview(ticker: str) -> str:
 
 # Define agent as a tool to get daily transaction analysis
 @function_tool
-async def get_company_daily_transaction(ticker: str, date_period: str) -> str:
+async def get_company_daily_transaction(ticker: str, metrics: str, date_period: str) -> str:
     """
     A tool to run trend analysis on daily transaction for a company.
 
     Args:
         ticker (str): The stock ticker of the company.
+        metrics (str): The metrics to analyze, such as "volume" or "price".
         date_period (str): The date range for the analysis as in the user query.
     """
 
     agent = trend_analysis_agent
     result = await Runner.run(
         agent,
-        f"Analyze the daily transaction for {ticker} in the time period {date_period}."
+        f"Analyze {metrics} for {ticker} in the time period {date_period}."
+    )
+    return result.final_output
+
+# Define agent as a tool to get top companies ranked by market cap
+@function_tool
+async def get_top_companies_ranked_by_market_cap(
+    n: int,
+    sort_by: str,
+    year: int
+) -> str:
+    """
+    A tool to retrieve top companies ranked by market cap or volume.
+
+    Args:
+        n (int): The number of top companies to retrieve.
+        sort_by: The criteria to sort the companies.
+    """
+
+    agent = top_company_ranked_agent
+    result = await Runner.run(
+        agent,
+        f"Provide a list of the top {n} companies ranked by {sort_by} in year {year}."
     )
     return result.final_output
 
@@ -52,16 +75,17 @@ async def get_company_daily_transaction(ticker: str, date_period: str) -> str:
 orchestrator_agent = Agent(
     name="Orchestrator Agent",
     instructions=
-    "Understand the query from users and use the tools given to you to answer the user query. " \
-    "Always pass a complete user query to each tool that used as input." \
-    "If the query required get_company_daily_transaction tool to be called, provide the ticket and date range based on the query." \
-    "If the query required get_company_overview tool to be called, provide the company ticker based on the query." \
-    "If no appropriate tool, return inform the user that the query is out of the scope of this app." \
-    "Strictly adhere to the GeneralizedOutput schema. Never return an image for chart or visualization." \
-    "If multiple tools have been used, summarized the output.",
+    "Your task is to understand the user's query and respond using the tools provided. "
+    "Always pass the full user query as input to any tool you invoke. "
+    "You must rely exclusively on the available tools to answer the query — do not generate responses independently. "
+    f"The current date is {date.today()}. "
+    "If none of the tools are suitable for the query, clearly inform the user that it is out of scope for this application. "
+    "All responses must strictly follow the GeneralizedOutput schema. Do not generate or return images for charts or visualizations. "
+    "If multiple tools are used, provide a clear and concise summary of their combined outputs.",
     tools=[
         get_company_overview,
-        get_company_daily_transaction
+        get_company_daily_transaction,
+        get_top_companies_ranked_by_market_cap
     ],
     output_type=GeneralizedOutput
 )

@@ -42,11 +42,12 @@ def get_daily_transaction(ticker: str, start_date: str, end_date: str) -> str:
 trend_analysis_agent = Agent(
     name="Daily Transaction Agent",
     instructions=
-        "Provide a dataset of daily transaction values and an analysis of them. "
-        "Never return a chart as an image."
-        "Your task is to generate structured data for **line chart for time-series data** "
-        "along with a suitable plot title, "
-        "axis labels, and a brief analysis. "
+        "Your task is to generate a structured dataset representing daily transaction values over time, "
+        "intended for use in a line chart. "
+        "Do not return any chart as an image. "
+        "You must provide: a well-structured time-series dataset, a descriptive plot title, clear axis labels, "
+        "and a meaningful analysis that explains patterns, trends, or anomalies in the data."
+        "Ensure the output is suitable for programmatic rendering in a Plotly line chart."
         "Strictly adhere to the AnalysisWithPlotOutput schema. "
         "For 'line_chart' charts: "
         "- 'x' should be dates in 'YYYY-MM-DD' format (strings). "
@@ -56,11 +57,8 @@ trend_analysis_agent = Agent(
         "Always provide relevant 'axis_labels'."
         "Infer the date range from the input. " \
         "Use get_past_n_days tool to get the starting date based on user query." \
-        # "If user gives no particular range, set the default as 30 days." \
         "Today's date is "+ get_today_date(),
-    tools=[get_daily_transaction, 
-           get_past_n_days
-           ],
+    tools=[get_daily_transaction, get_past_n_days],
     tool_use_behavior="run_llm_again",
     output_type=AnalysisWithPlotOutput
 )

@@ -8,6 +8,21 @@ from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput, Generali
 import pandas as pd
 import plotly.express as px
 
+import logging
+import logging
+
+# Basic logging configuration
+logging.basicConfig(
+    level=logging.INFO,  # You can change to DEBUG for more detail
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler("agentic_app.log"),  # Log to a file
+        logging.StreamHandler()  # Also print logs in terminal
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 def display_agent_response_title():
     st.markdown("### 🤖 Agent's Response")
 
@@ -52,30 +67,60 @@ def display_analysis_with_plot_output(plot_data):
             st.plotly_chart(fig)
 
 def main():
-    st.title("IDX Stock Analysis with Agentic AI")
-    user_input = st.text_input("Enter your query:")
+    if "user_input" not in st.session_state:
+        st.session_state.user_input = ""
+    if "run_query" not in st.session_state:
+        st.session_state.run_query = False
 
-    if user_input:
+    # Title and description
+    st.title("IDX AI Assistant 📈")
+    st.caption("📘 You can ask about IDX-listed companies, such as a company's summary overview, daily transaction trends, or top-ranked companies based on specific metrics (e.g., revenue or market cap).")
+
+    # Example queries
+    st.markdown("###### Try an example query:")
+    example_queries = [
+        "Show me summary of TLKM", 
+        "Analyze daily closing price of BBCA in the last 14 days!",
+        "Top 5 companies by earning in 2024"
+    ]
+
+    for example in example_queries:
+        if st.button(f"{example}"):
+            st.session_state.user_input = example
+            st.session_state.run_query = False  # Ensure it doesn't trigger submission
+            st.rerun()
+
+    # User input
+    user_input = st.text_area(
+        "💬 What would you like to know?", 
+        value=st.session_state.user_input,
+        key="user_input_text",
+        help="E.g., 'Show me daily transaction of BBCA in the past month'")
+    
+    if st.button("Submit"):
+        st.session_state.run_query = True
+
+    if st.session_state.run_query and st.session_state.user_input.strip():
         with st.spinner("Thinking..."):
             try:
+                logger.info(f"User query received: {st.session_state.user_input}")
                 with trace("Finance Agents Workflow"):
+                    logger.info("Running orchestrator agent...")
                     agent_response = asyncio.run(run_orchestrator_agent(user_input))
-                    print(agent_response)
+                    logger.info("Agent response received.")
                     if isinstance(agent_response, GeneralizedOutput):
                         display_agent_response_title()
                         st.write(agent_response.summary)
-                        if len(agent_response.plot_data) > 0:
+                        if agent_response.plot_data:
                             display_analysis_with_plot_output(agent_response.plot_data)
                     else:
                         display_agent_response_title()
                         st.write(agent_response)
                 
             except Exception as e:
-                st.error(f"An error occurred: {e}")
+                logger.error(f"Error during agent execution: {e}", exc_info=True)
                 st.info("Please try again or try a different query.")
         
-    else: st.warning("Currently we provide a report of IDX companies, including: summary overview, daily transaction analysis, and top companies ranked by certain dimension.")
-
     st.markdown("""
     ---
     🔧 **Powered by**:  

@@ -21,7 +21,7 @@ def get_company_overview(ticker: str) -> str:
     
 company_overview_agent = Agent(
     name="Company Overview Agent",
-    instructions="Return the a short narative overview of the company from the output of assigned tool.",
+    instructions="Return the a narative overview of the company from the output of assigned tool.",
     tools=[get_company_overview],
     output_type=TextOnlyOutput,
     tool_use_behavior="run_llm_again"

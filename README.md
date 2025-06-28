@@ -54,9 +54,9 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
    ```bash
    OPENAI_API_KEY=your_openai_key_here
    SECTORS_API_KEY=your_sectors_app_key_here
-4. **Run the app**
+4. **Run the app** (latest version)
    ```bash
-   streamlit run app.py
+   streamlit run app_v2.py
 
 ## Inspiration
 This project was inspired by the Agentic Patterns Workshop organized by Supertype. The hands-on session introduced practical techniques for building agent-based applications using modern LLMs and retrieval-augmented generation (RAG). The workshop and its accompanying course material — available at sectors.app/bulletin/agentic-patterns — provided the foundational ideas that sparked the development of this financial analytics app. 

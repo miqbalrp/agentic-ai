@@ -13,7 +13,8 @@ This app demonstrates a modular agent-based workflow:
 - 📊 **Trend Analyst Agent**: Uses a tool to pull real financial data via API and generate the analysis of the trend with visualization.
 - and more
 
-![AI Agent Demo](https://github.com/user-attachments/assets/6ddff5d7-b851-4971-b424-944f5803bb67)
+![Screen Recording 2025-06-28 at 11 52 02](https://github.com/user-attachments/assets/9d2aaf60-0c06-44f0-b798-8e392d493ab2)
+
 
 All agents are orchestrated using the [OpenAI Agents SDK](https://platform.openai.com/docs/assistants/overview), which provides a structured and extensible framework for building LLM-driven applications.
 

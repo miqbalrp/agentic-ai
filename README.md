@@ -1,6 +1,6 @@
 # agentic-ai
 
-A personal learning project focused on building **Agentic AI systems** using the **OpenAI Agents SDK**. This repository showcases an interactive financial analytics application that combines **multi-agent coordination**, **retrieval-augmented generation (RAG)**, and **natural language interfaces** — all powered by real stock data from [Sectors.app](https://sectors.app).
+A personal learning project focused on building **Agentic AI systems** using the **OpenAI Agents SDK**. This repository showcases an interactive financial analytics application that combines **multi-agent coordination**, **retrieval-augmented generation (RAG)**, and **natural language interfaces**.
 
 ---
 
@@ -8,22 +8,19 @@ A personal learning project focused on building **Agentic AI systems** using the
 
 This app demonstrates a modular agent-based workflow:
 
-- 🧭 **Triage Agent**: Understands user questions and delegates tasks.
+- 🧭 **Orchestrator Agent**: Understands user questions and manages tasks.
 - 🧾 **Company Overview Agent**: Generates a narrative report of a company in IDX.
 - 📊 **Trend Analyst Agent**: Uses a tool to pull real financial data via API and generate the analysis of the trend with visualization.
 - and more
 
-<img width="510" alt="image" src="https://github.com/user-attachments/assets/10e783b8-68ca-41e4-ae81-6ba4def58ce7" /> <img width="510" alt="image" src="https://github.com/user-attachments/assets/142f4d8e-715c-4419-93c8-e6a1fcddc7d1" />
-
-
-
+![AI Agent Demo](https://github.com/user-attachments/assets/6ddff5d7-b851-4971-b424-944f5803bb67)
 
 All agents are orchestrated using the [OpenAI Agents SDK](https://platform.openai.com/docs/assistants/overview), which provides a structured and extensible framework for building LLM-driven applications.
 
 ## Key Features
 
 - 🧠 Multi-agent coordination via OpenAI Agents SDK
-- 📈 Real-time financial data retrieval using API-based RAG
+- 📈 Real-time financial data retrieval from Sectors.app using API-based RAG
 - 🗣️ Natural language interface for user queries
 - 📊 Data visualization with Plotly
 - 🧪 Built with Streamlit for fast prototyping

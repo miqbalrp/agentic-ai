@@ -75,7 +75,7 @@ def main():
     # Title and description
     st.title("📈 IDX AI Assistant")
 
-    st.sidebar.markdown("### ℹ️ How to Use")
+    st.sidebar.markdown("### ℹ️ About")
 
     st.sidebar.markdown("""
     You can ask about:
@@ -96,9 +96,6 @@ def main():
     **Currently supports companies listed on the Indonesia Stock Exchange (IDX) only.**
     **Data is retrieved from [Sectors.app](https://sectors.app) API.**
                         """)
-
-
-
 
     # Example queries
     st.markdown("###### Try an example query:")
@@ -122,6 +119,7 @@ def main():
         help="E.g., 'Show me daily transaction of BBCA in the past month'")
     
     if st.button("Submit"):
+        st.session_state.user_input = st.session_state["user_input_text"]
         st.session_state.run_query = True
 
     if st.session_state.run_query and st.session_state.user_input.strip():

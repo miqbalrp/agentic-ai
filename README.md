@@ -1,6 +1,6 @@
 # agentic-ai
 
-A personal learning project focused on building **Agentic AI systems** using the **OpenAI Agents SDK**. This repository showcases an interactive financial analytics application that combines **multi-agent coordination**, **retrieval-augmented generation (RAG)**, and **natural language interfaces** — all powered by real stock data from [Sectors.app](https://sectors.app).
+A personal learning project focused on building **Agentic AI systems** using the **OpenAI Agents SDK**. This repository showcases an interactive financial analytics application that combines **multi-agent coordination**, **retrieval-augmented generation (RAG)**, and **natural language interfaces**.
 
 ---
 
@@ -8,14 +8,12 @@ A personal learning project focused on building **Agentic AI systems** using the
 
 This app demonstrates a modular agent-based workflow:
 
-- 🧭 **Triage Agent**: Understands user questions and delegates tasks.
+- 🧭 **Orchestrator Agent**: Understands user questions and manages tasks.
 - 🧾 **Company Overview Agent**: Generates a narrative report of a company in IDX.
 - 📊 **Trend Analyst Agent**: Uses a tool to pull real financial data via API and generate the analysis of the trend with visualization.
 - and more
 
-<img width="510" alt="image" src="https://github.com/user-attachments/assets/10e783b8-68ca-41e4-ae81-6ba4def58ce7" /> <img width="510" alt="image" src="https://github.com/user-attachments/assets/142f4d8e-715c-4419-93c8-e6a1fcddc7d1" />
-
-
+![Screen Recording 2025-06-28 at 11 52 02](https://github.com/user-attachments/assets/9d2aaf60-0c06-44f0-b798-8e392d493ab2)
 
 
 All agents are orchestrated using the [OpenAI Agents SDK](https://platform.openai.com/docs/assistants/overview), which provides a structured and extensible framework for building LLM-driven applications.
@@ -23,7 +21,7 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
 ## Key Features
 
 - 🧠 Multi-agent coordination via OpenAI Agents SDK
-- 📈 Real-time financial data retrieval using API-based RAG
+- 📈 Real-time financial data retrieval from Sectors.app using API-based RAG
 - 🗣️ Natural language interface for user queries
 - 📊 Data visualization with Plotly
 - 🧪 Built with Streamlit for fast prototyping
@@ -56,9 +54,9 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
    ```bash
    OPENAI_API_KEY=your_openai_key_here
    SECTORS_API_KEY=your_sectors_app_key_here
-4. **Run the app**
+4. **Run the app** (latest version)
    ```bash
-   streamlit run app.py
+   streamlit run app_v2.py
 
 ## Inspiration
 This project was inspired by the Agentic Patterns Workshop organized by Supertype. The hands-on session introduced practical techniques for building agent-based applications using modern LLMs and retrieval-augmented generation (RAG). The workshop and its accompanying course material — available at sectors.app/bulletin/agentic-patterns — provided the foundational ideas that sparked the development of this financial analytics app. 

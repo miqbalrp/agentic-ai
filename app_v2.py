@@ -73,8 +73,32 @@ def main():
         st.session_state.run_query = False
 
     # Title and description
-    st.title("IDX AI Assistant 📈")
-    st.caption("📘 You can ask about IDX-listed companies, such as a company's summary overview, daily transaction trends, or top-ranked companies based on specific metrics (e.g., revenue or market cap).")
+    st.title("📈 IDX AI Assistant")
+
+    st.sidebar.markdown("### ℹ️ How to Use")
+
+    st.sidebar.markdown("""
+    You can ask about:
+
+    - 📄 **Company overview**
+    - 📈 **Daily transaction trends** , including:
+        - Closing price
+        - Transaction volume
+        - Market cap
+    - 🏆 **Top-ranked companies** by metrics like:
+        - Dividend yield
+        - Earnings
+        - Market cap
+        - Revenue
+        - Total dividend
+        - PB / PE / PS ratios
+                        
+    **Currently supports companies listed on the Indonesia Stock Exchange (IDX) only.**
+    **Data is retrieved from [Sectors.app](https://sectors.app) API.**
+                        """)
+
+
+
 
     # Example queries
     st.markdown("###### Try an example query:")

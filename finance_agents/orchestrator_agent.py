@@ -54,7 +54,7 @@ async def get_company_daily_transaction(ticker: str, metrics: str, date_period: 
 
 # Define agent as a tool to get top companies ranked by market cap
 @function_tool
-async def get_top_companies_ranked_by_market_cap(
+async def get_top_companies_ranked(
     n: int,
     sort_by: str,
     year: int
@@ -88,7 +88,7 @@ orchestrator_agent = Agent(
     tools=[
         get_company_overview,
         get_company_daily_transaction,
-        get_top_companies_ranked_by_market_cap
+        get_top_companies_ranked
     ],
     output_type=GeneralizedOutput,
     input_guardrails=[

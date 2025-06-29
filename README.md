@@ -13,7 +13,7 @@ This app demonstrates a modular agent-based workflow:
 - 📊 **Trend Analyst Agent**: Uses a tool to pull real financial data via API and generate the analysis of the trend with visualization.
 - and more
 
-![Screen Recording 2025-06-29 at 15 27 40](https://github.com/user-attachments/assets/07e87692-3ac2-452f-8040-d81cdc38d2e9)
+![Quick Demo](assets/demo_2020250629.gif)
 
 All agents are orchestrated using the [OpenAI Agents SDK](https://platform.openai.com/docs/assistants/overview), which provides a structured and extensible framework for building LLM-driven applications.
 
@@ -60,16 +60,53 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
 ## Inspiration
 This project was inspired by the Agentic Patterns Workshop organized by Supertype. The hands-on session introduced practical techniques for building agent-based applications using modern LLMs and retrieval-augmented generation (RAG). The workshop and its accompanying course material — available at sectors.app/bulletin/agentic-patterns — provided the foundational ideas that sparked the development of this financial analytics app. 
 
-## Learning Milestone
-1. [2025-06-09] For the first version of the app, I have implement some of the fundamental concept on Multi-Agent System development:
-   - **Tool-Use, Function Calling, and API-based RAG**: I implement `function_tool` decorator from Agent SDK framework to make API calls. The data of IDX stock that used in this app is the actual data, retrieved from Sectors.app API. This prevents the model halucinate with their own data training and provide wrong information.
-   - **The Handoff and Delegation Pattern**: To orchestrate which Agent that should answer the query of user, I create `triage_agent` that responsible to understand the query of the user and handing off to the right agent.
-   - **Data Validation with Pydantic**: During the development of this app, I learn that although AI is powerful on doing the task, we should put an extra care for the data output to make sure the orchestration is running smoothly. Hence, I try to standardize the output of each Agent using Pydantic so it will be displayed correctly on Streamlit. 
-   - **Combining Text and Visualization in a Report**: If trend analysis and top companies agent are being called, they will provide the analysis as well as the supporting interactive visualization using Plotly Express. To make this happen, a strict data validation need to be implemented as mentioned in the previous point.
-2. [2025-06-12] The main change in app_v2 is we are utilizing **agent-as-tool** concept (in `orchestrator_agent.py`) rather than handoffs (in `triage_agent.py`). The advantage of this is we able to make more than 1 agent work together rather than handing off to one of the agent. For instance, if the query asks summary overview of a company AND the trend analysis of daily closing price, then two agents will work together; `company_overview_agent` and `trend_analysis_agent`, orchestrated by `orchestrator_agent`. 
-3. [2025-06-27] During the execution of **agent-as-tool** concept in the previous milestone, I found that although `agent.as_tool` function is very convenient to be used, we cannot specify the input that required by each tools. Without specifying the input, it might possible that some important context is lost. Hence, I use `Runner.run` to define strictly the input as suggested in this documentation: [Customizing tool-agents](https://openai.github.io/openai-agents-python/tools/#customizing-tool-agents).
-4. [2025-06-29] Implementing **Input Guardrail** pattern to block the query if it's asking about company outside IDX and if the query is containing word that is not compliance.
+## 🚀 Learning Milestones
+### 📅 [2025-06-09] — Foundation: Multi-Agent System v1
+For the first version of the app, I implemented several core concepts in Multi-Agent System development:
 
+- **Tool Use, Function Calling, and API-based Retrieval-Augmented Generation (RAG):**  
+  I used the `function_tool` decorator from the OpenAI Agents SDK to integrate real-time data via API calls. The app pulls live IDX stock data from the [Sectors.app API](https://sectors.app), ensuring that the model does not hallucinate or rely on outdated training data.
+
+- **Handoff & Delegation Pattern:**  
+  To orchestrate task routing, I built a `triage_agent` responsible for interpreting user queries and delegating them to the appropriate specialized agent.
+
+![Triage Agent](assets/graphs/Triage%20Agent_graph.png)
+
+- **Pydantic-Based Data Validation:**  
+  I learned that even though agents are powerful, it's crucial to validate outputs to ensure consistency and reliability in the orchestration pipeline. I used Pydantic models to enforce strict schemas, which also made integration with Streamlit smoother and more predictable.
+
+- **Combined Text + Visualization Reports:**  
+  Agents like `trend_analysis_agent` and `top_companies_agent` not only generate text summaries but also return structured data for Plotly charts. This dual-output design required strong validation to ensure data and narrative were aligned.
+
+---
+
+### 📅 [2025-06-12] — Evolving to Agent-as-Tool Architecture
+In version 2 of the app, I transitioned from a handoff pattern to the more flexible **agent-as-tool** concept (as implemented in `orchestrator_agent.py`).
+
+- This shift allows multiple agents to work together on a single query instead of passing responsibility to just one.  
+- For example, a query like *"Summarize TLKM and show its daily closing trend"* would trigger **both** `company_overview_agent` and `trend_analysis_agent`, with the `orchestrator_agent` coordinating their execution and combining the results.
+
+![Agest-as-Tools](assets/graphs/Orchestrator%20Agent_graph.png)
+
+---
+
+### 📅 [2025-06-27] — Handling Input Schema in Tool-Agents
+While using `agent.as_tool` is convenient, I discovered a limitation: you can't explicitly define input schemas per tool using that approach.
+
+- Without input constraints, some important context could be dropped.
+- To resolve this, I used `Runner.run()` to define strict input parameters for each agent, following guidance from the [OpenAI Agents SDK documentation](https://openai.github.io/openai-agents-python/tools/#customizing-tool-agents).
+
+This change improved reliability and ensured that each tool-agent receives the exact input it expects.
+
+---
+
+### 📅 [2025-06-29] — Guardrails for Safer AI Use
+To ensure the app remains compliant and focused, I implemented an **Input Guardrail** system to filter unsupported or inappropriate queries:
+
+- ❌ Block queries about companies **not listed on IDX**
+- ⚠️ Reject queries containing **non-compliant language or topics**
+
+This input filtering ensures the assistant stays within its intended scope and upholds data integrity and compliance standards.
 
 ---
 *This project is part of my ongoing journey into practical Agentic AI — suggestions and contributions are welcome!*

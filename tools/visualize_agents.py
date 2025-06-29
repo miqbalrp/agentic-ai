@@ -1,3 +1,9 @@
+# Before running this script, ensure you need to have the following installed:
+# - graphviz 
+# - pip install "openai-agents[viz]"
+
+# Check documentation for more details: https://openai.github.io/openai-agents-python/visualization/
+
 from agents.extensions.visualization import draw_graph
 from finance_agents.orchestrator_agent import orchestrator_agent
 from finance_agents.triage_agent import triage_agent

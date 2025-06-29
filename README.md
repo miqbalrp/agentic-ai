@@ -8,10 +8,10 @@ A personal learning project focused on building **Agentic AI systems** using the
 
 This app demonstrates a modular agent-based workflow:
 
-- 🧭 **Orchestrator Agent**: Understands user questions and manages tasks.
+- 🧭 **Orchestrator Agent**: Understands user questions and manages sub-agents.
 - 🧾 **Company Overview Agent**: Generates a narrative report of a company in IDX.
 - 📊 **Trend Analyst Agent**: Uses a tool to pull real financial data via API and generate the analysis of the trend with visualization.
-- and more
+- and more (see learning milestone for detail)
 
 ![Quick Demo](assets/demo.gif)
 
@@ -22,7 +22,7 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
 - 🧠 Multi-agent coordination via OpenAI Agents SDK
 - 📈 Real-time financial data retrieval from Sectors.app using API-based RAG
 - 🗣️ Natural language interface for user queries
-- 📊 Data visualization with Plotly
+- 📊 Interactive data visualization with Plotly
 - 🧪 Built with Streamlit for fast prototyping
 
 ---
@@ -49,13 +49,13 @@ All agents are orchestrated using the [OpenAI Agents SDK](https://platform.opena
    source venv/bin/activate      # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
 3. **Configure your environment variables**
-   Create a .env file with:
+   Create a .env file (or .streamlit/secrets.toml) with:
    ```bash
    OPENAI_API_KEY=your_openai_key_here
    SECTORS_API_KEY=your_sectors_app_key_here
-4. **Run the app** (latest version)
+4. **Run the app**
    ```bash
-   streamlit run app_v2.py
+   streamlit run app.py
 
 ## Inspiration
 This project was inspired by the Agentic Patterns Workshop organized by Supertype. The hands-on session introduced practical techniques for building agent-based applications using modern LLMs and retrieval-augmented generation (RAG). The workshop and its accompanying course material — available at sectors.app/bulletin/agentic-patterns — provided the foundational ideas that sparked the development of this financial analytics app. 
@@ -87,6 +87,8 @@ In version 2 of the app, I transitioned from a handoff pattern to the more flexi
 - For example, a query like *"Summarize TLKM and show its daily closing trend"* would trigger **both** `company_overview_agent` and `trend_analysis_agent`, with the `orchestrator_agent` coordinating their execution and combining the results.
 
 ![Agest-as-Tools](assets/graphs/Orchestrator%20Agent_graph.png)
+
+*Note*: for reference, I keep the previous version of app that using `triage_agent` in `legacy/app_v1.py`
 
 ---
 

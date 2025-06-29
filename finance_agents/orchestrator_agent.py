@@ -1,5 +1,4 @@
 from agents import Agent, Runner, function_tool
-from dotenv import load_dotenv
 
 from datetime import date
 from dataclasses import dataclass
@@ -13,7 +12,9 @@ from finance_agents.input_guardrails import idx_only_query_guardrail, compliance
 
 from schemas.finance_app import GeneralizedOutput
 
-load_dotenv()
+from utils.config import setup_openai_api_key, setup_sectors_api_key
+setup_openai_api_key()
+setup_sectors_api_key()
 
 # Define agent as a tool to get company overview
 @function_tool

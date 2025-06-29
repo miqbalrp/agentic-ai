@@ -8,7 +8,11 @@ from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput, Generali
 import pandas as pd
 import plotly.express as px
 
+from utils.config import setup_openai_api_key, setup_sectors_api_key  # Ensure config is loaded to set up API keys
 import logging
+
+setup_openai_api_key()  # Set up OpenAI API key
+setup_sectors_api_key()  # Set up Sectors API key
 
 # Basic logging configuration
 logging.basicConfig(

@@ -11,6 +11,10 @@ from agents import (
 )
 
 from schemas.finance_app import GuardrailViolationInfo
+from utils.config import setup_openai_api_key, setup_sectors_api_key
+
+setup_openai_api_key()  # Set up OpenAI API key
+setup_sectors_api_key()  # Set up Sectors API key   
 
 # Guardrail 1: Check if the query is related to IDX-listed companies only
 class IDXOnlyQuery(BaseModel):

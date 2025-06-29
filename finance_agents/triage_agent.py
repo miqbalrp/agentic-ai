@@ -1,5 +1,4 @@
 from agents import Agent, Runner
-from dotenv import load_dotenv
 
 from datetime import date
 from dataclasses import dataclass
@@ -9,7 +8,10 @@ from finance_agents.company_overview_agent import company_overview_agent
 from finance_agents.trend_analysis_agent import trend_analysis_agent
 from finance_agents.top_companies_list_agent import top_company_ranked_agent
 
-load_dotenv()
+from utils.config import setup_openai_api_key, setup_sectors_api_key
+
+setup_openai_api_key()  # Set up OpenAI API key
+setup_sectors_api_key()  # Set up Sectors API key
 
 triage_agent = Agent(
     name="Triage Agent",

@@ -1,13 +1,16 @@
 from agents import Agent, Runner, function_tool
 from dotenv import load_dotenv
 
-from utils.api_client import retrieve_from_endpoint
 from schemas.finance_app import TextOnlyOutput
+from utils.api_client import retrieve_from_endpoint
+from utils.config import setup_openai_api_key, setup_sectors_api_key
 
 import logging
-logger = logging.getLogger(__name__)
 
-load_dotenv()
+setup_openai_api_key()
+setup_sectors_api_key()
+
+logger = logging.getLogger(__name__)
 
 @function_tool
 def get_company_overview(ticker: str) -> str:

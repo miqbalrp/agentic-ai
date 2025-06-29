@@ -88,3 +88,7 @@ pylint-output.txt
 # SQLite database files
 *.sqlite3
 *.db
+
+# Streamlit
+.streamlit
+.streamlit/secrets.toml

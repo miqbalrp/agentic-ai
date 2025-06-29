@@ -1,14 +1,15 @@
 from agents import Agent, Runner, function_tool
-from dotenv import load_dotenv
 from utils.api_client import retrieve_from_endpoint
 from datetime import date
 
 from schemas.finance_app import AnalysisWithPlotOutput
+from utils.config import setup_openai_api_key, setup_sectors_api_key
 
 import pandas as pd
 import plotly.express as px
 
-load_dotenv()
+setup_openai_api_key()  # Set up OpenAI API key
+setup_sectors_api_key()  # Set up Sectors API key
 
 def get_today_date() -> str:
     """

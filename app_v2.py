@@ -1,7 +1,7 @@
 import streamlit as st
 import asyncio
 
-from agents import trace
+from agents import trace, InputGuardrailTripwireTriggered
 from finance_agents.orchestrator_agent import run_orchestrator_agent
 from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput, GeneralizedOutput
 
@@ -97,6 +97,14 @@ def main():
     **Data is retrieved from [Sectors.app](https://sectors.app) API.**
                         """)
 
+    st.sidebar.markdown("""
+    ---
+    🔧 **Powered by**:  
+    [OpenAI API](https://platform.openai.com/docs) | [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) | [Plotly](https://plotly.com/python/) | [Sectors.app API](https://sectors.app) | [Streamlit](https://streamlit.io)
+
+    💻 **Source Code**: [GitHub Repository](https://github.com/miqbalrp/agentic-ai)
+    """)
+
     # Example queries
     st.markdown("###### Try an example query:")
     example_queries = [
@@ -138,18 +146,18 @@ def main():
                     else:
                         display_agent_response_title()
                         st.write(agent_response)
-                
+        
+            except InputGuardrailTripwireTriggered as e:
+                print(e)
+                info = e.guardrail_result.output.output_info
+                message=f"Input blocked by {info.guardrail} guardrail: {info.reason}" + (f"\nDetails: {info.details}" if info.details else "")
+                logger.warning(f"Input guardrail triggered: {message}")
+                st.info(f"❌ Input blocked: {message}")
+
+
             except Exception as e:
                 logger.error(f"Error during agent execution: {e}", exc_info=True)
                 st.info("Please try again or try a different query.")
-        
-    st.markdown("""
-    ---
-    🔧 **Powered by**:  
-    [OpenAI API](https://platform.openai.com/docs) | [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) | [Plotly](https://plotly.com/python/) | [Sectors.app API](https://sectors.app) | [Streamlit](https://streamlit.io)
-
-    💻 **Source Code**: [GitHub Repository](https://github.com/miqbalrp/agentic-ai)
-    """)
 
 if __name__ == "__main__":
     main()

@@ -46,3 +46,10 @@ class GeneralizedOutput(BaseModel):
     plot_data: Optional[List[PlotlyTraceData]] = Field(
         description="A list of data objects, each representing a trace for a Plotly figure. Contains data formatted for the specified chart_type."
     )
+
+# Define the standardized output information for guardrail violations
+class GuardrailViolationInfo(BaseModel):
+    guardrail: str = Field(description="Name or type of the guardrail triggered.")
+    violated: bool = Field(description="Whether the guardrail was violated.")
+    reason: str = Field(description="Explanation of the violation.")
+    details: str = Field(default="", description="Additional context or details.")

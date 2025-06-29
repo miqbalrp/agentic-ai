@@ -9,6 +9,8 @@ from finance_agents.company_overview_agent import company_overview_agent
 from finance_agents.trend_analysis_agent import trend_analysis_agent
 from finance_agents.top_companies_list_agent import top_company_ranked_agent
 
+from finance_agents.input_guardrails import idx_only_query_guardrail, compliance_guardrail
+
 from schemas.finance_app import GeneralizedOutput
 
 load_dotenv()
@@ -87,7 +89,11 @@ orchestrator_agent = Agent(
         get_company_daily_transaction,
         get_top_companies_ranked_by_market_cap
     ],
-    output_type=GeneralizedOutput
+    output_type=GeneralizedOutput,
+    input_guardrails=[
+        idx_only_query_guardrail,
+        compliance_guardrail
+    ]
 )
 
 async def run_orchestrator_agent(input_promt: GeneralizedOutput):

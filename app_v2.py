@@ -9,7 +9,6 @@ import pandas as pd
 import plotly.express as px
 
 import logging
-import logging
 
 # Basic logging configuration
 logging.basicConfig(
@@ -118,7 +117,7 @@ def main():
     example_queries = [
         "Show me summary of TLKM", 
         "Analyze daily closing price of BBCA in the last 14 days!",
-        "Top 5 companies by earning in 2024"
+        "Top 5 Indonesia companies by earning in 2024"
     ]
     st.pills(
         label="Try an example query:",
@@ -136,7 +135,6 @@ def main():
         help="E.g., 'Show me daily transaction of BBCA in the past month'")
     
     if st.button("Submit"):
-        # st.session_state.user_input = st.session_state["user_input_text"]
         st.session_state.run_query = True
 
     if st.session_state.run_query and st.session_state.user_input.strip():

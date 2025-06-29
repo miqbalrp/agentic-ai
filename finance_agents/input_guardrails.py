@@ -7,6 +7,7 @@ from agents import (
     Runner,
     TResponseInputItem,
     input_guardrail,
+    WebSearchTool
 )
 
 from schemas.finance_app import GuardrailViolationInfo
@@ -28,9 +29,11 @@ class IDXOnlyQuery(BaseModel):
 
 query_analysis_agent = Agent(
     name="IDX Query Analysis Agent",
-    instructions="Analyzes the user's query to determine if it is related to companies in Indonesia Stock Exchange.",
+    instructions="Analyzes the user's query to determine if it is related to companies in Indonesia Stock Exchange." \
+    "Use WebSearchTool to verify if the query is related to IDX companies.",
     output_type=IDXOnlyQuery,
     model="gpt-4o-mini",  # Use a smaller model for efficiency
+    tools=[WebSearchTool()]
 )
 
 @input_guardrail

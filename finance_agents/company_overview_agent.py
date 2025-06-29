@@ -1,8 +1,11 @@
 from agents import Agent, Runner, function_tool
 from dotenv import load_dotenv
-from utils.api_client import retrieve_from_endpoint
 
+from utils.api_client import retrieve_from_endpoint
 from schemas.finance_app import TextOnlyOutput
+
+import logging
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
@@ -16,7 +19,8 @@ def get_company_overview(ticker: str) -> str:
     try:
         return retrieve_from_endpoint(url)
     except Exception as e:
-        print(f"Error occurred: {e}")
+        logger.error(f"Error retrieving company overview for {ticker}: {e}")
+        print(f"Error retrieving company overview for {ticker}: {e}")
         return None
     
 company_overview_agent = Agent(
@@ -33,5 +37,3 @@ async def run_company_overview_agent(input_promt: str) -> str:
         input_promt
     )
     return result.final_output
-
-

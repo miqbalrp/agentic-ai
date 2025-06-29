@@ -67,16 +67,22 @@ def display_analysis_with_plot_output(plot_data):
             st.plotly_chart(fig)
 
 def main():
+    st.set_page_config(
+        page_title="IDX AI Assistant",
+        page_icon="📈",
+        layout="wide",
+        initial_sidebar_state="expanded",
+    )
     if "user_input" not in st.session_state:
         st.session_state.user_input = ""
     if "run_query" not in st.session_state:
         st.session_state.run_query = False
+    if "example_query_pills" not in st.session_state:
+        st.session_state.example_query_pills = None
 
     # Title and description
     st.title("📈 IDX AI Assistant")
-
     st.sidebar.markdown("### ℹ️ About")
-
     st.sidebar.markdown("""
     You can ask about:
 
@@ -96,7 +102,6 @@ def main():
     **Currently supports companies listed on the Indonesia Stock Exchange (IDX) only.**
     **Data is retrieved from [Sectors.app](https://sectors.app) API.**
                         """)
-
     st.sidebar.markdown("""
     ---
     🔧 **Powered by**:  
@@ -105,29 +110,33 @@ def main():
     💻 **Source Code**: [GitHub Repository](https://github.com/miqbalrp/agentic-ai)
     """)
 
-    # Example queries
-    st.markdown("###### Try an example query:")
+    # Example queries    
+    def on_pill_change():
+        """Callback function to handle pill selection change."""
+        st.session_state.user_input = st.session_state.example_query_pills
+
     example_queries = [
         "Show me summary of TLKM", 
         "Analyze daily closing price of BBCA in the last 14 days!",
         "Top 5 companies by earning in 2024"
     ]
-
-    for example in example_queries:
-        if st.button(f"{example}"):
-            st.session_state.user_input = example
-            st.session_state.run_query = False  # Ensure it doesn't trigger submission
-            st.rerun()
+    st.pills(
+        label="Try an example query:",
+        options=example_queries,
+        selection_mode="single",
+        key="example_query_pills",
+        on_change=on_pill_change
+    )
 
     # User input
     user_input = st.text_area(
         "💬 What would you like to know?", 
         value=st.session_state.user_input,
-        key="user_input_text",
+        key="user_input",
         help="E.g., 'Show me daily transaction of BBCA in the past month'")
     
     if st.button("Submit"):
-        st.session_state.user_input = st.session_state["user_input_text"]
+        # st.session_state.user_input = st.session_state["user_input_text"]
         st.session_state.run_query = True
 
     if st.session_state.run_query and st.session_state.user_input.strip():
@@ -158,6 +167,8 @@ def main():
             except Exception as e:
                 logger.error(f"Error during agent execution: {e}", exc_info=True)
                 st.info("Please try again or try a different query.")
+        
+        st.session_state.run_query = False  # Reset after query
 
 if __name__ == "__main__":
     main()

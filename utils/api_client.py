@@ -21,7 +21,18 @@ def retrieve_from_endpoint(url: str) -> dict:
         response.raise_for_status()
         data = response.json()
         logger.info(f"Data retrieved successfully from {url}")
+        return data  
     except requests.exceptions.HTTPError as err:
-        logger.error(f"HTTP error occurred: {err}")
-        raise SystemExit(err)
-    return json.dumps(data)
+        if err.response is not None:
+            logger.error(f"HTTP error {err.response.status_code}: {err.response.text}")
+            try:
+                return err.response.json()
+            except ValueError:
+                # Response not JSON
+                return {"error": err.response.text}
+        else:
+            logger.error(f"HTTP error occurred: {err}")
+            return {"error": str(err)}
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return {"error": str(e)}

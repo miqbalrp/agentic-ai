@@ -37,7 +37,6 @@ query_analysis_agent = Agent(
     "Use WebSearchTool to verify if the query is related to IDX companies.",
     output_type=IDXOnlyQuery,
     model="gpt-4o-mini",  # Use a smaller model for efficiency
-    tools=[WebSearchTool()]
 )
 
 @input_guardrail

@@ -15,6 +15,7 @@ SECTORS_API_KEY = os.getenv("SECTORS_API_KEY")
 
 headers = {"Authorization": SECTORS_API_KEY}
 
+@st.cache_data(ttl=3600)
 def retrieve_from_endpoint(url: str) -> dict:
     try:
         response = requests.get(url, headers=headers)

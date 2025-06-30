@@ -89,6 +89,5 @@ pylint-output.txt
 *.sqlite3
 *.db
 
-# Streamlit
-.streamlit
+# Streamlit secrets
 .streamlit/secrets.toml

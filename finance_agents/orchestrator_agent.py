@@ -60,8 +60,13 @@ async def get_top_companies_ranked(
     year: int
 ) -> str:
     """
-    A tool to retrieve top companies ranked by market cap or volume.
-
+    A tool to retrieve top companies ranked by 
+        - Dividend yield
+        - Earnings
+        - Market cap
+        - Revenue
+        - Total dividend
+        - PB / PE / PS ratios
     Args:
         n (int): The number of top companies to retrieve.
         sort_by: The criteria to sort the companies.

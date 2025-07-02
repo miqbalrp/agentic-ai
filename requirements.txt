@@ -1,2 +1,3 @@
 openai-agents
 streamlit
+plotly

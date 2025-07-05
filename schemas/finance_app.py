@@ -53,3 +53,10 @@ class GuardrailViolationInfo(BaseModel):
     violated: bool = Field(description="Whether the guardrail was violated.")
     reason: str = Field(description="Explanation of the violation.")
     details: str = Field(default="", description="Additional context or details.")
+
+# Define the output type for the planner agent
+class PlannerOutput(BaseModel):
+    user_query: str = Field(description="The original user query that needs to be processed.")
+    execute_steps: bool = Field(description="Indicates whether the steps should be transferred to orchestrator agent and executed.")
+    reason: str = Field(description="A reason for the decision to execute or not execute the steps.")
+    steps: Optional[str] = Field(description="A list of steps to execute, each step should specify the tool name and parameters.")

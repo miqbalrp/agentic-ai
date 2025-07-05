@@ -111,4 +111,23 @@ To ensure the app remains compliant and focused, I implemented an **Input Guardr
 This input filtering ensures the assistant stays within its intended scope and upholds data integrity and compliance standards.
 
 ---
+
+### 📅 [2025-07-05] — Planner & Executor Pattern for Multi-Step Queries
+
+The current orchestration pattern struggled with **multi-step queries**, often returning partial or inconsistent results.
+
+For example:
+> "Find the top 3 companies by revenue and show their trend lines."
+
+The app correctly identified the top companies, but then **randomly selected tickers** when generating trend lines.
+
+To address this, I refactored the architecture by introducing a **Planner–Executor pattern**:
+
+- 🧠 `planner_agent`: interprets the full query and breaks it into sub-tasks
+- 🛠️ `executor_agent`: handles each sub-task using the appropriate tool-agent
+
+This change improves consistency and ensures that **intermediate results are preserved** and passed forward correctly.
+
+---
+
 *This project is part of my ongoing journey into practical Agentic AI — suggestions and contributions are welcome!*

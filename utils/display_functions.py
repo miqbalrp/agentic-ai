@@ -110,6 +110,7 @@ def display_text_only_output(text_output: TextOnlyOutput):
     st.write(text_output.summary)
 
 def display_analysis_with_plot_output(plot_data):
+    import uuid
     for dataset in plot_data:
         plot_title = dataset.plot_title
         x_axis_label = dataset.x_axis_title
@@ -130,7 +131,7 @@ def display_analysis_with_plot_output(plot_data):
                 labels={'x_data': x_axis_label, 'y_data': y_axis_label},
                 title=plot_title
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, key=str(uuid.uuid4()))  # Use a unique key to avoid Streamlit caching issues
 
         elif dataset.chart_type == 'bar_horizontal_chart':
             y_label_order = df['y_data'].tolist()
@@ -143,4 +144,4 @@ def display_analysis_with_plot_output(plot_data):
                 title=plot_title,
                 category_orders={'y_data': y_label_order}
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, key=str(uuid.uuid4()))  # Use a unique key to avoid Streamlit caching issues

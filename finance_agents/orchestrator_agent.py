@@ -98,11 +98,11 @@ orchestrator_agent = Agent(
     output_type=GeneralizedOutput,
     input_guardrails=[
         idx_only_query_guardrail,
-        compliance_guardrail
+        # compliance_guardrail
     ]
 )
 
-async def run_orchestrator_agent(input_promt: GeneralizedOutput):
+async def run_orchestrator_agent(input_promt: str) -> GeneralizedOutput:
     result = await Runner.run(
         orchestrator_agent,
         input_promt

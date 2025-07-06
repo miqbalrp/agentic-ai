@@ -55,7 +55,8 @@ def main():
                         )
 
                         # Run the executor agent with the steps from the planner agent
-                        executor_result = asyncio.run(run_executor_agent(planner_result))
+                        executor_input = f"User query: {planner_result.user_query}\nSteps to execute: {planner_result.steps}"
+                        executor_result = asyncio.run(run_executor_agent(executor_input))
                         if isinstance(executor_result, GeneralizedOutput):
                             display_agent_response_title()
                             st.write(executor_result.summary)

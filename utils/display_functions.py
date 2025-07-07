@@ -3,22 +3,23 @@ import pandas as pd
 import plotly.express as px
 from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput, GeneralizedOutput
 
-def set_title_and_sidebar():
-    """Display the title and sidebar content for the Streamlit app.
-    This function sets the title of the app and provides a sidebar with information about the app's functionality.
-    It includes a brief description of the features available, such as company overview, daily transaction trends,
-    and top-ranked companies by various financial metrics.
-    """
+def set_title(title_text= "IDX AI Assistant", title_icon= "📈"):
+    """Set the title and configuration for the Streamlit app."""
 
     st.set_page_config(
-        page_title="IDX AI Assistant",
-        page_icon="📈",
+        page_title=title_text,
+        page_icon=title_icon,
         layout="wide",
         initial_sidebar_state="expanded",
     )
 
     # Title and description
-    st.title("📈 IDX AI Assistant")
+    st.title(f"{title_icon} {title_text}")
+
+def set_sidebar():
+    """Set the sidebar content for the Streamlit app.
+    This function provides an overview of the app's capabilities and links to relevant resources."""
+
     st.sidebar.markdown("### ℹ️ About")
     st.sidebar.markdown("""
     You can ask about:

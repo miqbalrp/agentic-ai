@@ -64,6 +64,9 @@ async def idx_only_query_guardrail(ctx, agent, input) -> GuardrailFunctionOutput
 @input_guardrail
 async def compliance_guardrail(ctx, agent, input) -> GuardrailFunctionOutput:
     forbidden_phrases = ["guaranteed profit", "100% return", "insider tip"]
+    if isinstance(input, list): # Handle historical input format
+        latest_input = input[-1]
+        input = latest_input['content']
     violated = any(phrase in input.lower() for phrase in forbidden_phrases)
     reason = (
         "Non-compliant investment advice detected."

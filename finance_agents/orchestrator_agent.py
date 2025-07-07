@@ -98,7 +98,7 @@ orchestrator_agent = Agent(
     output_type=GeneralizedOutput,
     input_guardrails=[
         idx_only_query_guardrail,
-        # compliance_guardrail
+        compliance_guardrail
     ]
 )
 

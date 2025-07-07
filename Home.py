@@ -77,7 +77,7 @@ def main():
             except InputGuardrailTripwireTriggered as e:
                 print(e)
                 info = e.guardrail_result.output.output_info
-                message=f"Input blocked by {info.guardrail} guardrail: {info.reason}" + (f"\nDetails: {info.details}" if info.details else "")
+                message=f"Input blocked by {info.guardrail} guardrail: {info.reason}"
                 logger.warning(f"Input guardrail triggered: {message}")
                 st.info(f"❌ Input blocked: {message}")
             

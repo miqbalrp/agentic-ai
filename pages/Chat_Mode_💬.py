@@ -13,22 +13,26 @@ import logging
 setup_openai_api_key()  # Set up OpenAI API key
 setup_sectors_api_key()  # Set up Sectors API key
 
+logging.basicConfig(
+    level=logging.INFO,  # You can change to DEBUG for more detail
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler("agentic_app.log"),  # Log to a file
+        logging.StreamHandler()  # Also print logs in terminal
+    ]
+)
+logger = logging.getLogger(__name__)
+
 def main():
     set_title(title_text="Chat with IDX AI Assistant", title_icon="💬")
     set_sidebar()
 
-    # Intialize chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+    initialize_chat_history()    
 
-    # Initialize chat id
-    if "chat_id" not in st.session_state:
-        st.session_state.chat_id = uuid.uuid4().hex[:16]
-    chat_id = st.session_state.chat_id
+    msg = generate_chat_id()  # Generate or retrieve chat ID
+    logger.info(msg)  # Log the chat ID for debugging
 
-    if st.button("Clear Chat"):
-        st.session_state.messages = []
-        st.rerun()
+    display_clear_chat_button()  # Display button to clear chat history
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
@@ -44,9 +48,10 @@ def main():
                 except ValueError:
                     st.markdown(message["content"])
 
-
     if prompt := st.chat_input("What do you want to know?"):
         # Add user message to chat history
+        logger.info(f"User query received: {prompt}")
+
         st.session_state.messages.append({"role": "user", "content": prompt})
         
         with st.chat_message("user"):
@@ -54,10 +59,11 @@ def main():
 
         with st.spinner("Thinking...", show_time=True):
             try:
-                with trace("Finance Agents Chat Workflow Grouped", group_id=chat_id):
+                with trace("Finance Agents Chat Workflow Grouped", group_id=st.session_state.chat_id):
                     chat_history = [{"role": msg["role"], "content": msg["content"]} for msg in st.session_state.messages]
                     
                     agent_response = asyncio.run(run_chat_triage_agent(chat_history))
+                    logger.info(f"Agent response received")
 
                     with st.chat_message("assistant"):
                         if isinstance(agent_response, GeneralizedOutput):
@@ -77,14 +83,17 @@ def main():
                                 "role": "assistant",
                                 "content": agent_response
                             })
+                        logger.info("Assistant response displayed.")
             except InputGuardrailTripwireTriggered as e:
                 with st.chat_message("assistant"):
                     info = e.guardrail_result.output.output_info
                     message=f"Input blocked by {info.guardrail} guardrail: {info.reason}"
                     st.markdown(f"Input guardrail triggered: {message}")
+                    logger.warning(f"Input guardrail triggered: {message}")
             except Exception as e:
                 with st.chat_message("assistant"):
                     st.write(f"An error occurred while processing your request. Please try again. {e}")
+                    logger.error(f"Error during agent execution: {e}", exc_info=True)
 
 if __name__ == "__main__":
     main()

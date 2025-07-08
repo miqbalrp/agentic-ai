@@ -6,11 +6,6 @@ from typing import Literal
 
 from finance_agents.orchestrator_agent import orchestrator_agent
 
-from utils.config import setup_openai_api_key, setup_sectors_api_key
-
-setup_openai_api_key()  # Set up OpenAI API key
-setup_sectors_api_key()  # Set up Sectors API key
-
 chat_triage_agent = Agent(
     name="Chat Triage Agent",
     instructions=
@@ -33,3 +28,16 @@ async def run_chat_triage_agent(input_promt: str):
         input_promt
     )
     return result.final_output
+
+if __name__ == "__main__":
+    import asyncio
+    from agents import run_agent
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()  # Set up OpenAI API key
+    setup_sectors_api_key()  # Set up Sectors API key
+
+    # Example usage
+    user_query = "What is the current market cap of PT Bank Central Asia Tbk?"
+    result = asyncio.run(run_chat_triage_agent(user_query))
+    print(result)

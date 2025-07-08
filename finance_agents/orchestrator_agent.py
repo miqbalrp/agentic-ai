@@ -12,10 +12,6 @@ from finance_agents.input_guardrails import idx_only_query_guardrail, compliance
 
 from schemas.finance_app import GeneralizedOutput
 
-from utils.config import setup_openai_api_key, setup_sectors_api_key
-setup_openai_api_key()
-setup_sectors_api_key()
-
 # Define agent as a tool to get company overview
 @function_tool
 async def get_company_overview(ticker: str) -> str:
@@ -111,6 +107,11 @@ async def run_orchestrator_agent(input_promt: str) -> GeneralizedOutput:
 
 if __name__ == "__main__":
     import asyncio
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()
+    setup_sectors_api_key()
+
     query = input("Input query:")
     result = asyncio.run(run_orchestrator_agent(query))
     print(result)

@@ -58,6 +58,28 @@ def initialize_session_state():
     if "example_query_pills" not in st.session_state:
         st.session_state.example_query_pills = None
 
+def initialize_chat_history():
+    """Initialize chat history in the session state."""
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+def generate_chat_id():
+        """Generate a unique chat ID for the session."""
+        import uuid
+        if "chat_id" not in st.session_state:
+            st.session_state.chat_id = uuid.uuid4().hex[:16]
+            return "New chat session started with ID: " + st.session_state.chat_id
+        else:
+            return "Chat session ID: " + st.session_state.chat_id
+
+def display_clear_chat_button():
+    """Display a button to clear the chat history in the Streamlit app.
+    This function allows users to reset the chat history, which can be useful for starting a new conversation or clearing previous interactions."""
+    
+    if st.button("Clear Chat"):
+        st.session_state.messages = []
+        st.rerun()  # Rerun the app to reflect the cleared chat history
+
 def display_example_queries():
     """Display example queries as selectable pills in the Streamlit app.
     This function provides a set of predefined example queries that users can select to see how the app responds.

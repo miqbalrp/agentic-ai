@@ -4,14 +4,8 @@ from datetime import date
 
 from schemas.finance_app import TopCompanyClassification, AnalysisWithPlotOutput
 
-from utils.config import setup_openai_api_key, setup_sectors_api_key
-
 import pandas as pd
 import plotly.express as px
-
-setup_openai_api_key()  # Set up OpenAI API key
-setup_sectors_api_key()  # Set up Sectors API key
-
 
 @function_tool
 def get_top_companies_ranked_by_classification(classification: TopCompanyClassification, number_of_stock:int=3, year:int=2025):
@@ -44,3 +38,17 @@ top_company_ranked_agent = Agent(
     tool_use_behavior="run_llm_again",
     output_type=AnalysisWithPlotOutput
 )
+
+if __name__ == "__main__":
+    import asyncio
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()
+    setup_sectors_api_key()
+
+    classification = input("Enter classification (e.g., 'dividend_yield', 'earnings', 'market_cap'): ")
+    number_of_stock = int(input("Enter number of stocks to retrieve: "))
+    year = int(input("Enter year: "))
+    
+    result = asyncio.run(get_top_companies_ranked_by_classification(classification, number_of_stock, year))
+    print(result)

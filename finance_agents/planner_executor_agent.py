@@ -12,10 +12,6 @@ from finance_agents.input_guardrails import idx_only_query_guardrail, compliance
 
 from schemas.finance_app import GeneralizedOutput, PlannerOutput
 
-from utils.config import setup_openai_api_key, setup_sectors_api_key
-setup_openai_api_key()
-setup_sectors_api_key()
-
 # Define agent as a tool to get company overview
 @function_tool
 async def get_company_overview(ticker: str) -> str:
@@ -156,13 +152,17 @@ async def run_executor_agent(input_promt: PlannerOutput) -> GeneralizedOutput:
     """
     result = await Runner.run(
         executor_agent,
-        input_promt.model_dump_json()
+        input_promt
     )
     return result.final_output
 
 
 if __name__ == "__main__":
     import asyncio
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()
+    setup_sectors_api_key()
 
     # Example usage of the planner and executor agents
     query = input("Input query:")

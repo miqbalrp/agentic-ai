@@ -11,10 +11,6 @@ from agents import (
 )
 
 from schemas.finance_app import GuardrailViolationInfo
-from utils.config import setup_openai_api_key, setup_sectors_api_key
-
-setup_openai_api_key()  # Set up OpenAI API key
-setup_sectors_api_key()  # Set up Sectors API key   
 
 # Guardrail 1: Check if the query is related to IDX-listed companies only
 class IDXOnlyQuery(BaseModel):
@@ -64,6 +60,9 @@ async def idx_only_query_guardrail(ctx, agent, input) -> GuardrailFunctionOutput
 @input_guardrail
 async def compliance_guardrail(ctx, agent, input) -> GuardrailFunctionOutput:
     forbidden_phrases = ["guaranteed profit", "100% return", "insider tip"]
+    if isinstance(input, list): # Handle historical input format
+        latest_input = input[-1]
+        input = latest_input['content']
     violated = any(phrase in input.lower() for phrase in forbidden_phrases)
     reason = (
         "Non-compliant investment advice detected."
@@ -77,3 +76,20 @@ async def compliance_guardrail(ctx, agent, input) -> GuardrailFunctionOutput:
             details=f"Query: {input}" if violated else ""
         ),
         tripwire_triggered=violated)
+
+if __name__ == "__main__":
+    import asyncio
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()  # Set up OpenAI API key
+    setup_sectors_api_key()  # Set up Sectors API key   
+
+
+    # Example usage of the IDX-only query guardrail
+    async def main():
+        ctx = RunContextWrapper()
+        input_query = "What are the top companies in Indonesia Stock Exchange?"
+        result = await idx_only_query_guardrail(ctx, None, input_query)
+        print(result.output_info)
+
+    asyncio.run(main())

@@ -3,22 +3,23 @@ import pandas as pd
 import plotly.express as px
 from schemas.finance_app import TextOnlyOutput, AnalysisWithPlotOutput, GeneralizedOutput
 
-def set_title_and_sidebar():
-    """Display the title and sidebar content for the Streamlit app.
-    This function sets the title of the app and provides a sidebar with information about the app's functionality.
-    It includes a brief description of the features available, such as company overview, daily transaction trends,
-    and top-ranked companies by various financial metrics.
-    """
+def set_title(title_text= "IDX AI Assistant", title_icon= "📈"):
+    """Set the title and configuration for the Streamlit app."""
 
     st.set_page_config(
-        page_title="IDX AI Assistant",
-        page_icon="📈",
+        page_title=title_text,
+        page_icon=title_icon,
         layout="wide",
         initial_sidebar_state="expanded",
     )
 
     # Title and description
-    st.title("📈 IDX AI Assistant")
+    st.title(f"{title_icon} {title_text}")
+
+def set_sidebar():
+    """Set the sidebar content for the Streamlit app.
+    This function provides an overview of the app's capabilities and links to relevant resources."""
+
     st.sidebar.markdown("### ℹ️ About")
     st.sidebar.markdown("""
     You can ask about:
@@ -56,6 +57,28 @@ def initialize_session_state():
         st.session_state.run_query = False
     if "example_query_pills" not in st.session_state:
         st.session_state.example_query_pills = None
+
+def initialize_chat_history():
+    """Initialize chat history in the session state."""
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+def generate_chat_id():
+        """Generate a unique chat ID for the session."""
+        import uuid
+        if "chat_id" not in st.session_state:
+            st.session_state.chat_id = uuid.uuid4().hex[:16]
+            return "New chat session started with ID: " + st.session_state.chat_id
+        else:
+            return "Chat session ID: " + st.session_state.chat_id
+
+def display_clear_chat_button():
+    """Display a button to clear the chat history in the Streamlit app.
+    This function allows users to reset the chat history, which can be useful for starting a new conversation or clearing previous interactions."""
+    
+    if st.button("Clear Chat"):
+        st.session_state.messages = []
+        st.rerun()  # Rerun the app to reflect the cleared chat history
 
 def display_example_queries():
     """Display example queries as selectable pills in the Streamlit app.
@@ -110,6 +133,7 @@ def display_text_only_output(text_output: TextOnlyOutput):
     st.write(text_output.summary)
 
 def display_analysis_with_plot_output(plot_data):
+    import uuid
     for dataset in plot_data:
         plot_title = dataset.plot_title
         x_axis_label = dataset.x_axis_title
@@ -130,7 +154,7 @@ def display_analysis_with_plot_output(plot_data):
                 labels={'x_data': x_axis_label, 'y_data': y_axis_label},
                 title=plot_title
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, key=str(uuid.uuid4()))  # Use a unique key to avoid Streamlit caching issues
 
         elif dataset.chart_type == 'bar_horizontal_chart':
             y_label_order = df['y_data'].tolist()
@@ -143,4 +167,4 @@ def display_analysis_with_plot_output(plot_data):
                 title=plot_title,
                 category_orders={'y_data': y_label_order}
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, key=str(uuid.uuid4()))  # Use a unique key to avoid Streamlit caching issues

@@ -22,7 +22,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def main():
-    set_title_and_sidebar()
+    set_title()
+    set_sidebar()
     initialize_session_state()  # Initialize session state variables
     display_example_queries()  # Display example queries as selectable pills
     user_input = display_user_input_area()  # Display text area for user input
@@ -76,7 +77,7 @@ def main():
             except InputGuardrailTripwireTriggered as e:
                 print(e)
                 info = e.guardrail_result.output.output_info
-                message=f"Input blocked by {info.guardrail} guardrail: {info.reason}" + (f"\nDetails: {info.details}" if info.details else "")
+                message=f"Input blocked by {info.guardrail} guardrail: {info.reason}"
                 logger.warning(f"Input guardrail triggered: {message}")
                 st.info(f"❌ Input blocked: {message}")
             

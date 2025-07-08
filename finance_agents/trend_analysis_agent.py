@@ -3,13 +3,9 @@ from utils.api_client import retrieve_from_endpoint
 from datetime import date
 
 from schemas.finance_app import AnalysisWithPlotOutput
-from utils.config import setup_openai_api_key, setup_sectors_api_key
 
 import pandas as pd
 import plotly.express as px
-
-setup_openai_api_key()  # Set up OpenAI API key
-setup_sectors_api_key()  # Set up Sectors API key
 
 def get_today_date() -> str:
     """
@@ -70,3 +66,19 @@ async def run_trend_analysis_agent(input_promt: str) -> AnalysisWithPlotOutput:
         input_promt
     )
     return result.final_output
+
+if __name__ == "__main__":
+    import asyncio
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()
+    setup_sectors_api_key()
+
+    ticker = input("Enter stock ticker: ")
+    past_n_days = int(input("Enter number of past days: "))
+    
+    start_date = asyncio.run(get_past_n_days(past_n_days))
+    end_date = get_today_date()
+
+    result = asyncio.run(run_trend_analysis_agent(f"Analyze daily transaction for {ticker} from {start_date} to {end_date}."))
+    print(result)

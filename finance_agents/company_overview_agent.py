@@ -3,12 +3,7 @@ from dotenv import load_dotenv
 
 from schemas.finance_app import TextOnlyOutput
 from utils.api_client import retrieve_from_endpoint
-from utils.config import setup_openai_api_key, setup_sectors_api_key
-
 import logging
-
-setup_openai_api_key()
-setup_sectors_api_key()
 
 logger = logging.getLogger(__name__)
 
@@ -40,3 +35,15 @@ async def run_company_overview_agent(input_promt: str) -> str:
         input_promt
     )
     return result.final_output
+
+if __name__ == "__main__":
+    import asyncio
+
+    from utils.config import setup_openai_api_key, setup_sectors_api_key
+    setup_openai_api_key()
+    setup_sectors_api_key()
+
+    ticker = input("Enter stock ticker: ")
+    
+    result = asyncio.run(run_company_overview_agent(f"Provide a summary overview for the company with ticker {ticker}."))
+    print(result)

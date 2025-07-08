@@ -152,7 +152,7 @@ async def run_executor_agent(input_promt: PlannerOutput) -> GeneralizedOutput:
     """
     result = await Runner.run(
         executor_agent,
-        input_promt.model_dump_json()
+        input_promt
     )
     return result.final_output
 

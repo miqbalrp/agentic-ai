@@ -33,20 +33,25 @@ def main():
     logger.info(msg)  # Log the chat ID for debugging
 
     display_clear_chat_button()  # Display button to clear chat history
-
-    # Display chat messages from history on app rerun
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            if message["role"] == "user":
-                st.markdown(message["content"])
-            else:
-                try:
-                    content = GeneralizedOutput.model_validate_json(message["content"])
-                    st.markdown(content.summary)
-                    if content.plot_data:
-                        display_analysis_with_plot_output(content.plot_data)
-                except ValueError:
-                    st.markdown(message["content"])
+    
+    def display_single_message(role, content):
+        """Display a single chat message in the chat interface."""
+        with st.chat_message(role):
+            try:
+                content = GeneralizedOutput.model_validate_json(content)
+                st.markdown(content.summary)
+                if content.plot_data:
+                    display_analysis_with_plot_output(content.plot_data)
+            except ValueError:
+                st.markdown(content)
+    
+    def display_chat_history():
+        """Display the chat history in the chat interface."""
+        for message in st.session_state.messages:
+            display_single_message(message["role"], message["content"])
+    
+    # Display chat history on app rerun
+    display_chat_history()
 
     if prompt := st.chat_input("What do you want to know?"):
         # Add user message to chat history

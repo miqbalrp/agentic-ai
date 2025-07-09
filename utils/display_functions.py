@@ -80,6 +80,22 @@ def display_clear_chat_button():
         st.session_state.messages = []
         st.rerun()  # Rerun the app to reflect the cleared chat history
 
+def display_single_message(role, content):
+    """Display a single chat message in the chat interface."""
+    with st.chat_message(role):
+        try:
+            content = GeneralizedOutput.model_validate_json(content)
+            st.markdown(content.summary)
+            if content.plot_data:
+                display_analysis_with_plot_output(content.plot_data)
+        except ValueError:
+            st.markdown(content)
+
+def display_chat_history():
+    """Display the chat history in the chat interface."""
+    for message in st.session_state.messages:
+        display_single_message(message["role"], message["content"])
+
 def display_example_queries():
     """Display example queries as selectable pills in the Streamlit app.
     This function provides a set of predefined example queries that users can select to see how the app responds.

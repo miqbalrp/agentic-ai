@@ -42,7 +42,7 @@ class AnalysisWithPlotOutput(BaseModel):
     )
 
 class GeneralizedOutput(BaseModel):
-    summary: str = Field(description="A narative summary of the output.")
+    summary: str = Field(description="A narative explanation of the output.")
     plot_data: Optional[List[PlotlyTraceData]] = Field(
         description="A list of data objects, each representing a trace for a Plotly figure. Contains data formatted for the specified chart_type."
     )

@@ -2,6 +2,9 @@
 
 A personal learning project focused on building **Agentic AI systems** using the **OpenAI Agents SDK**. This repository showcases an interactive financial analytics application that combines **multi-agent coordination**, **retrieval-augmented generation (RAG)**, and **natural language interfaces**.
 
+Try the app here! 
+[IDX AI Assistant](https://idx-ai-assistant-miqbalrp-v2.streamlit.app/) 
+
 ---
 
 ## Project Overview
@@ -127,6 +130,24 @@ To address this, I refactored the architecture by introducing a **Planner–Exec
 - 🛠️ `executor_agent`: handles each sub-task using the appropriate tool-agent
 
 This change improves consistency and ensures that **intermediate results are preserved** and passed forward correctly.
+
+---
+
+### 📅 [2025-07-08] — Chat Mode for Conversational Interaction
+
+After exploring core Agentic AI concepts, the app now supports a **Chat Mode**, enabling users to interact conversationally—similar to LLM apps like ChatGPT or Gemini—but focused exclusively on **IDX-listed companies**.
+
+Thanks to **Streamlit's Chat Elements** ([docs](https://docs.streamlit.io/develop/api-reference/chat)), this feature was straightforward to implement:
+
+- 💬 Used `st.session_state` to persist multi-turn conversation
+- 📊 Maintained structured output to ensure **Plotly** plots render correctly across chat history
+- 🧭 Introduced `chat_triage_agent` to handle general conversational inputs (e.g. greetings, feature inquiries)  
+  - These messages bypass `InputGuardrail`
+  - If a query relates to IDX companies, it’s **delegated to `orchestrator_agent`**
+
+This upgrade makes the assistant more natural and accessible to users.  
+🔜 **Next milestone:** implementing **streaming output** for a more responsive experience.
+
 
 ---
 

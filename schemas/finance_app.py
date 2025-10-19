@@ -60,3 +60,26 @@ class PlannerOutput(BaseModel):
     execute_steps: bool = Field(description="Indicates whether the steps should be transferred to orchestrator agent and executed.")
     reason: str = Field(description="A reason for the decision to execute or not execute the steps.")
     steps: Optional[str] = Field(description="A list of steps to execute, each step should specify the tool name and parameters.")
+
+# Define generalized and dynamic assistant output
+class TextChunk(BaseModel):
+    type: Literal["text"] = "text"
+    content: str = Field(description="Narrative or explanatory text.")
+
+class DataFrameChunk(BaseModel):
+    type: Literal["dataframe"] = "dataframe"
+    dataframe: dict = Field(description="DataFrame serialized as a dict (e.g., columns and data).")
+    title: Optional[str] = Field(default=None, description="Optional title for the dataframe.")
+
+class ChartChunk(BaseModel):
+    type: Literal["line_chart", "bar_horizontal_chart"]
+    plot_data: PlotlyTraceData = Field(description="A list of data objects, each representing a trace for a Plotly figure. Contains data formatted for the specified chart_type.")
+
+class AssistantOutput(BaseModel):
+    chunks: List[
+        Union[
+            TextChunk,
+            DataFrameChunk,
+            ChartChunk
+        ]
+    ]

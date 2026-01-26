@@ -1,0 +1,385 @@
+manifest:
+  version: "0.1.2"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: miqbalrp/agentic-ai
+    source: https://github.com/miqbalrp/agentic-ai
+    branch: main
+    commit: "778e9d2c"
+    scope: [finance_agents/chat_triage_agent.py, finance_agents/company_overview_agent.py, finance_agents/input_guardrails.py,
+      finance_agents/orchestrator_agent.py, finance_agents/planner_executor_agent.py, finance_agents/tools_agent.py, finance_agents/top_companies_list_agent.py,
+      finance_agents/trend_analysis_agent.py, finance_agents/triage_agent.py, schemas/finance_app.py, tools/visualize_agents.py,
+      utils/api_client.py, utils/config.py]
+  issued:
+    by: A2AS.org
+    at: '2026-01-26T16:10:31Z'
+  signatures:
+    digest: sha256:D-32_wUzsC7uj6rr-Xt1wd4-qzAUynTLrOiS8PkZk5c
+    key: ed25519:FDUpbz-69tw88DMiM1aP8V_5wJXUIIxHprAsgZVe1bM
+    sig: ed25519:BB0oB7c5q4xSB4yR5Rgek88JjPmEOnD-_-FSGukwIn8wEoeMvrHDEhqjzP9gvFolDgTxV6Rw2bp2f_ABV0j4Dg
+
+agents:
+  chat_triage_agent:
+    type: instance
+    models: [gpt-4o-mini]
+    params:
+      name: Chat Triage Agent
+      handoffs: [orchestrator_agent]
+      instructions: ['Understand the query from user.If the query is related to IDX-listed companies, handoff the analysis
+          to orchestrator agent.If the query is not related to IDX-listed companies, return an informative message to the
+          user.If the query is not understood, return an informative message to the user.User can ask about:- **Company overview**-
+          **Daily transaction trends** , including: Closing price, Transaction volume, Market cap- **Top-ranked companies**
+          by metrics like:, Dividend yield, Earnings, Market cap, Revenue, Total dividend, PB / PE / PS ratiosCurrently supports
+          companies listed on the Indonesia Stock Exchange (IDX) only.**']
+  company_overview_agent.0:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_company_overview]
+    params:
+      name: Company Overview Agent
+      output_type: TextOnlyOutput
+      tool_use_behavior: run_llm_again
+      instance: company_overview_agent
+      instructions: [Return the a narative overview of the company from the output of assigned tool.]
+  company_overview_agent.1:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_company_overview]
+    params:
+      name: Company Overview Agent
+      output_type: TextOnlyOutput
+      tool_use_behavior: run_llm_again
+      instance: company_overview_agent
+      instructions: [Return the a narative overview of the company from the output of assigned tool.]
+  executor_agent:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_company_overview, get_company_daily_transaction, get_top_companies_ranked]
+    params:
+      name: Executor Agent
+      output_type: GeneralizedOutput
+      instructions: [executor_instructions]
+  orchestrator_agent:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_company_overview, get_company_daily_transaction, get_top_companies_ranked]
+    params:
+      name: Orchestrator Agent
+      output_type: GeneralizedOutput
+      input_guardrails: [idx_only_query_guardrail, compliance_guardrail]
+      instructions: ['Your task is to understand the user''s query and respond using the tools provided. Always pass the full
+          user query as input to any tool you invoke. You must rely exclusively on the available tools to answer the query
+          — do not generate responses independently. The current date is {date.today}. If none of the tools are suitable for
+          the query, clearly inform the user that it is out of scope for this application. All responses must strictly follow
+          the GeneralizedOutput schema. Do not generate or return images for charts or visualizations. If multiple tools are
+          used, provide a clear and concise summary of their combined outputs.']
+  planner_agent:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_company_overview, get_company_daily_transaction, get_top_companies_ranked]
+    params:
+      name: Planner Agent
+      input_guardrails: [idx_only_query_guardrail, compliance_guardrail]
+      output_type: PlannerOutput
+      instructions: ['Given a user query, decompose it into a sequence of tool invocations.For each step, specify the tool
+          name and required parameters. Only use the available tools: get_company_overview, get_company_daily_transaction,
+          get_top_companies_ranked.Do NOT call or execute the tools here, only output the plan steps.   Example input: ''Show
+          me the top 3 companies by market cap in 2024 and provide a summary overview for each company.Example output: Step
+          1: Call get_top_companies_ranked to return top 3 companies by market cap in 2024Step 2: For each company ticker
+          returned in Step 1, call get_company_overview with tickers from step 1.Step 3: Combine the summaries from Step 2
+          into a final report.']
+  query_analysis_agent:
+    type: instance
+    models: [gpt-4o-mini]
+    params:
+      name: IDX Query Analysis Agent
+      output_type: IDXOnlyQuery
+      instructions: [Analyzes the user's query to determine if it is related to companies in Indonesia Stock Exchange.Use
+          WebSearchTool to verify if the query is related to IDX companies.]
+  top_company_ranked_agent.0:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_top_companies_ranked_by_classification]
+    params:
+      name: Top Company Ranked Agent
+      tool_use_behavior: run_llm_again
+      output_type: AnalysisWithPlotOutput
+      instance: top_company_ranked_agent
+      instructions: ['Your task is to generate a structured dataset representing the top companies ranked by a specific classification
+          or metric. The data should be formatted for visualization in a horizontal bar chart. Include a descriptive plot
+          title, clearly labeled axes, and a concise analysis summarizing key insights or comparisons from the ranking. Ensure
+          the output is suitable for rendering programmatically — do not return charts as images.Strictly adhere to the AnalysisWithPlotOutput
+          schema. For ''bar_horizontal_chart'' charts: - ''y'' should be list of the companies ticker. - ''x'' should be numerical
+          values (floats). - Set ''chart_type'' to ''bar_horizontal_chart''. Do NOT include any additional conversational
+          text outside the JSON output. Always provide relevant ''axis_labels''.']
+  top_company_ranked_agent.1:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_top_companies_ranked_by_classification]
+    params:
+      name: Top Company Ranked Agent
+      tool_use_behavior: run_llm_again
+      output_type: AnalysisWithPlotOutput
+      instance: top_company_ranked_agent
+      instructions: ['Your task is to generate a structured dataset representing the top companies ranked by a specific classification
+          or metric. The data should be formatted for visualization in a horizontal bar chart. Include a descriptive plot
+          title, clearly labeled axes, and a concise analysis summarizing key insights or comparisons from the ranking. Ensure
+          the output is suitable for rendering programmatically — do not return charts as images.Strictly adhere to the AnalysisWithPlotOutput
+          schema. For ''bar_horizontal_chart'' charts: - ''y'' should be list of the companies ticker. - ''x'' should be numerical
+          values (floats). - Set ''chart_type'' to ''bar_horizontal_chart''. Do NOT include any additional conversational
+          text outside the JSON output. Always provide relevant ''axis_labels''.']
+  trend_analysis_agent.0:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_daily_transaction, get_past_n_days]
+    params:
+      name: Daily Transaction Agent
+      tool_use_behavior: run_llm_again
+      output_type: AnalysisWithPlotOutput
+      instance: trend_analysis_agent
+      instructions: [trend_analysis_agent_instruction]
+  trend_analysis_agent.1:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_daily_transaction, get_past_n_days]
+    params:
+      name: Daily Transaction Agent
+      tool_use_behavior: run_llm_again
+      output_type: AnalysisWithPlotOutput
+      instance: trend_analysis_agent
+  triage_agent:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      name: Triage Agent
+      handoffs: [company_overview_agent, trend_analysis_agent, top_company_ranked_agent]
+      instructions: ['Understand the query from users and handoff the analysis to appropriate agent. If no appropriate agent,
+          return inform the user that the query is out of the scope of this app.']
+
+models:
+  gpt-4.1:
+    type: default
+    agents: [triage_agent, company_overview_agent.0, trend_analysis_agent.0, top_company_ranked_agent.0, trend_analysis_agent.1,
+      orchestrator_agent, company_overview_agent.1, planner_agent, executor_agent, top_company_ranked_agent.1]
+  gpt-4o-mini:
+    type: literal
+    agents: [chat_triage_agent, query_analysis_agent]
+
+tools:
+  get_company_daily_transaction:
+    type: decorator
+    agents: [orchestrator_agent, planner_agent, executor_agent]
+    params:
+      description: |-
+        A tool to run trend analysis on daily transaction for a company.
+
+        Args:
+            ticker (str): The stock ticker of the company.
+            metrics (str): The metrics to analyze, such as "volume" or "price".
+            date_period (str): The date range for the analysis as in the user query.
+  get_company_overview:
+    type: decorator
+    agents: [company_overview_agent.0, orchestrator_agent, company_overview_agent.1, planner_agent, executor_agent]
+    params:
+      description: Get company overview only from IDX
+  get_daily_transaction:
+    type: decorator
+    agents: [trend_analysis_agent.0, trend_analysis_agent.1]
+    params:
+      description: Get daily transaction for an IDX stock
+  get_past_n_days:
+    type: decorator
+    agents: [trend_analysis_agent.0, trend_analysis_agent.1]
+    params:
+      description: Get the date n days ago from today
+  get_top_companies_ranked:
+    type: decorator
+    agents: [orchestrator_agent, planner_agent, executor_agent]
+    params:
+      description: "A tool to retrieve top companies ranked by \n    - Dividend yield\n    - Earnings\n    - Market cap\n\
+        \    - Revenue\n    - Total dividend\n    - PB / PE / PS ratios\nArgs:\n    n (int): The number of top companies to\
+        \ retrieve.\n    sort_by: The criteria to sort the companies."
+  get_top_companies_ranked_by_classification:
+    type: decorator
+    agents: [top_company_ranked_agent.0, top_company_ranked_agent.1]
+    params:
+      description: 'Get top companies based on classification mentioned by query. '
+
+teams:
+  chat_triage_agent:
+    type: handoff
+    agents: [chat_triage_agent, orchestrator_agent]
+  triage_agent:
+    type: handoff
+    agents: [triage_agent]
+
+imports:
+  '*': utils.display_functions.*
+  Agent: agents.Agent
+  AnalysisWithPlotOutput: schemas.finance_app.AnalysisWithPlotOutput
+  asyncio: asyncio
+  BaseModel: pydantic.BaseModel
+  company_overview_agent: finance_agents.company_overview_agent.company_overview_agent
+  compliance_guardrail: finance_agents.input_guardrails.compliance_guardrail
+  dataclass: dataclasses.dataclass
+  date: datetime.date
+  draw_graph: agents.extensions.visualization.draw_graph
+  Field: pydantic.Field
+  function_tool: agents.function_tool
+  GeneralizedOutput: schemas.finance_app.GeneralizedOutput
+  GuardrailFunctionOutput: agents.GuardrailFunctionOutput
+  GuardrailViolationInfo: schemas.finance_app.GuardrailViolationInfo
+  idx_only_query_guardrail: finance_agents.input_guardrails.idx_only_query_guardrail
+  input_guardrail: agents.input_guardrail
+  InputGuardrailTripwireTriggered: agents.InputGuardrailTripwireTriggered
+  json: json
+  List: typing.List
+  Literal: typing.Literal
+  load_dotenv: dotenv.load_dotenv
+  logging: logging
+  Optional: typing.Optional
+  orchestrator_agent: finance_agents.orchestrator_agent.orchestrator_agent
+  os: os
+  pd: pandas
+  PlannerOutput: schemas.finance_app.PlannerOutput
+  px: plotly.express
+  requests: requests
+  retrieve_from_endpoint: utils.api_client.retrieve_from_endpoint
+  run_agent: agents.run_agent
+  run_chat_triage_agent: finance_agents.chat_triage_agent.run_chat_triage_agent
+  run_executor_agent: finance_agents.planner_executor_agent.run_executor_agent
+  run_orchestrator_agent: finance_agents.orchestrator_agent.run_orchestrator_agent
+  run_planner_agent: finance_agents.planner_executor_agent.run_planner_agent
+  RunContextWrapper: agents.RunContextWrapper
+  Runner: agents.Runner
+  setup_openai_api_key: utils.config.setup_openai_api_key
+  setup_sectors_api_key: utils.config.setup_sectors_api_key
+  st: streamlit
+  TextOnlyOutput: schemas.finance_app.TextOnlyOutput
+  top_company_ranked_agent: finance_agents.top_companies_list_agent.top_company_ranked_agent
+  TopCompanyClassification: schemas.finance_app.TopCompanyClassification
+  trace: agents.trace
+  trend_analysis_agent: finance_agents.trend_analysis_agent.trend_analysis_agent
+  TResponseInputItem: agents.TResponseInputItem
+  triage_agent: finance_agents.triage_agent.triage_agent
+  Union: typing.Union
+  uuid: uuid
+  WebSearchTool: agents.WebSearchTool
+
+functions:
+  compliance_guardrail:
+    type: async
+    module: finance_agents.input_guardrails
+    args: [ctx, agent, input]
+    params:
+      returns: GuardrailFunctionOutput
+  get_company_daily_transaction:
+    type: tool
+    module: finance_agents.planner_executor_agent
+    args: [ticker, metrics, date_period]
+    params:
+      returns: str
+  get_company_overview:
+    type: tool
+    module: finance_agents.planner_executor_agent
+    args: [ticker]
+    params:
+      returns: str
+  get_daily_transaction:
+    type: tool
+    module: finance_agents.trend_analysis_agent
+    args: [ticker, start_date, end_date]
+    params:
+      returns: str
+  get_past_n_days:
+    type: tool
+    module: finance_agents.trend_analysis_agent
+    args: [past_n_days]
+    params:
+      returns: str
+  get_today_date:
+    type: sync
+    module: finance_agents.trend_analysis_agent
+    params:
+      returns: str
+  get_top_companies_ranked:
+    type: tool
+    module: finance_agents.planner_executor_agent
+    args: [n, sort_by, year]
+    params:
+      returns: str
+  get_top_companies_ranked_by_classification:
+    type: tool
+    module: finance_agents.top_companies_list_agent
+    args: [classification, number_of_stock, year]
+  idx_only_query_guardrail:
+    type: async
+    module: finance_agents.input_guardrails
+    args: [ctx, agent, input]
+    params:
+      returns: GuardrailFunctionOutput
+  main:
+    type: async
+    module: finance_agents.input_guardrails
+  retrieve_from_endpoint:
+    type: sync
+    module: utils.api_client
+    args: [url]
+    params:
+      returns: dict
+  run_chat_triage_agent:
+    type: async
+    module: finance_agents.chat_triage_agent
+    args: [input_promt]
+  run_company_overview_agent:
+    type: async
+    module: finance_agents.company_overview_agent
+    args: [input_promt]
+    params:
+      returns: str
+  run_executor_agent:
+    type: async
+    module: finance_agents.planner_executor_agent
+    args: [input_promt]
+    params:
+      returns: GeneralizedOutput
+  run_orchestrator_agent:
+    type: async
+    module: finance_agents.orchestrator_agent
+    args: [input_promt]
+    params:
+      returns: GeneralizedOutput
+  run_planner_agent:
+    type: async
+    module: finance_agents.planner_executor_agent
+    args: [input_promt]
+    params:
+      returns: PlannerOutput
+  run_trend_analysis_agent:
+    type: async
+    module: finance_agents.trend_analysis_agent
+    args: [input_promt]
+    params:
+      returns: AnalysisWithPlotOutput
+  run_triage_agent:
+    type: async
+    module: finance_agents.triage_agent
+    args: [input_promt]
+  setup_openai_api_key:
+    type: sync
+    module: utils.config
+  setup_sectors_api_key:
+    type: sync
+    module: utils.config
+
+variables:
+  OPENAI_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv, os.environ]
+      path: [utils.config]
+  SECTORS_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv, os.environ]
+      path: [utils.api_client, utils.config]

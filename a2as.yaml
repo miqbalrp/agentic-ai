@@ -1,0 +1,140 @@
+manifest:
+  version: "0.1.2"
+  schema: https://a2as.org/cert/schema
+  subject:
+    name: yafernandes/agentic-ai
+    source: https://github.com/yafernandes/agentic-ai
+    branch: main
+    commit: "fff762a2"
+    scope: [src/main_agent.py, src/weather_agent.py, src/weather_tools.py]
+  issued:
+    by: A2AS.org
+    at: '2026-01-26T16:10:50Z'
+  signatures:
+    digest: sha256:oDLgM4O2P9cLVnyzIUK3R0atYWODT8Kovh84KsTmhCI
+    key: ed25519:rqANVCsZA2UvKP9iA_AB3vsnr6UGw7HOcR_TyDU0iiE
+    sig: ed25519:PyEg_aO0orcTM1r66DF7GKx8HpXDRnpMXwuSzsIqHsfCV4pMo3N3lKx6cOpPZtzu36Csm0z1t4s0i7T69BQzCA
+
+agents:
+  agent:
+    type: instance
+    models: [gpt-4.1]
+    params:
+      name: Helpful agent
+      handoffs: [weather_agent]
+      instructions: [You are a helpful agent. Be concise on your answers., 'IMPORTANT: Always provide a response with whatever
+          information you have available.', 'If you cannot get complete information, provide a partial answer and explain
+          what''s missing.', Do not keep trying indefinitely - give the best answer you can with the information available.]
+  weather_agent:
+    type: instance
+    models: [gpt-4.1]
+    tools: [get_coordinates, get_weather, get_days_between_dates, get_today]
+    params:
+      name: Weather agent
+      instructions: [Provide the weather forecast for up to seven days ahead., 'IMPORTANT: If any tool fails or returns an
+          error, provide whatever information you can gather and explain what went wrong.', 'Do not retry tools multiple times
+          - if a tool fails once, move on and provide the best answer possible with available data.', 'Always return a response,
+          even if partial.']
+
+models:
+  gpt-4.1:
+    type: default
+    agents: [agent, weather_agent]
+
+tools:
+  get_coordinates:
+    type: variable
+    agents: [weather_agent]
+    params:
+      dynamic: "True"
+  get_days_between_dates:
+    type: variable
+    agents: [weather_agent]
+    params:
+      dynamic: "True"
+  get_today:
+    type: variable
+    agents: [weather_agent]
+    params:
+      dynamic: "True"
+  get_weather:
+    type: variable
+    agents: [weather_agent]
+    params:
+      dynamic: "True"
+      description: |-
+        Returns the weather for the date provided. It can only forecast up to 6 days ahead.
+
+        Args:
+            latitude: Latitude of the location
+            longitude: Longitude of the location
+            target_date: Target date
+
+teams:
+  agent:
+    type: handoff
+    agents: [agent, weather_agent]
+
+imports:
+  Agent: agents.Agent
+  asyncio: asyncio
+  date: datetime.date
+  datetime: datetime.datetime
+  function_tool: agents.function_tool
+  get_coordinates: weather_tools.get_coordinates
+  get_days_between_dates: weather_tools.get_days_between_dates
+  get_today: weather_tools.get_today
+  get_weather: weather_tools.get_weather
+  logging: logging
+  main_agent: main_agent
+  os: os
+  REQUEST_TIMEOUT: settings.REQUEST_TIMEOUT
+  requests: requests
+  Runner: agents.Runner
+  timedelta: datetime.timedelta
+  weather_agent: weather_agent.weather_agent
+
+functions:
+  get_coordinates:
+    type: tool
+    module: src.weather_tools
+    args: [location]
+    params:
+      returns: str
+  get_days_between_dates:
+    type: tool
+    module: src.weather_tools
+    args: [fromStr, toStr]
+    params:
+      returns: str
+  get_today:
+    type: tool
+    module: src.weather_tools
+    params:
+      returns: str
+  get_weather:
+    type: tool
+    module: src.weather_tools
+    args: [latitude, longitude, target_date]
+    params:
+      returns: str
+  main:
+    type: async
+    module: src.main_agent
+
+variables:
+  DD_DATASET_NAME:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [src.settings]
+  DD_LLMOBS_ML_APP:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [src.settings]
+  OPENAI_API_KEY:
+    type: env
+    params:
+      caller: [os.getenv]
+      path: [src.settings]
